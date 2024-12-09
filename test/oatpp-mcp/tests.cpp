@@ -1,27 +1,11 @@
-
-#include "oatpp-test/UnitTest.hpp"
-
-#include "oatpp-mcp/MyClass.hpp"
-
-#include "oatpp/Environment.hpp"
+#include "oatpp-mcp/app/ServerTest.hpp"
 
 #include <iostream>
 
 namespace {
 
-class Test : public oatpp::test::UnitTest {
-public:
-  Test() : oatpp::test::UnitTest("MyTag")
-  {}
-
-  void onRun() override {
-    // TODO write correct  tests
-    MyClass::doSomething();
-  }
-};
-
 void runTests() {
-  OATPP_RUN_TEST(Test);
+  OATPP_RUN_TEST(oatpp::mcp::app::ServerTest);
 }
 
 }

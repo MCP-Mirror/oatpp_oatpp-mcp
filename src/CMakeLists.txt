@@ -1,7 +1,24 @@
 
 add_library(${OATPP_THIS_MODULE_NAME}
-        oatpp-mcp/MyClass.hpp
-        oatpp-mcp/MyClass.cpp
+        oatpp-mcp/capabilities/Tool.cpp
+        oatpp-mcp/capabilities/Tool.hpp
+        oatpp-mcp/dto/Capabilities.hpp
+        oatpp-mcp/dto/ClientInfo.hpp
+        oatpp-mcp/dto/JsonRpc.hpp
+        oatpp-mcp/dto/Methods.hpp
+        oatpp-mcp/dto/ServerInfo.hpp
+        oatpp-mcp/sse/Controller.cpp
+        oatpp-mcp/sse/Controller.hpp
+        oatpp-mcp/sse/ReadCallback.cpp
+        oatpp-mcp/sse/ReadCallback.hpp
+        oatpp-mcp/EventStream.cpp
+        oatpp-mcp/EventStream.hpp
+        oatpp-mcp/Listener.cpp
+        oatpp-mcp/Listener.hpp
+        oatpp-mcp/Server.cpp
+        oatpp-mcp/Server.hpp
+        oatpp-mcp/Session.cpp
+        oatpp-mcp/Session.hpp
 )
 
 set_target_properties(${OATPP_THIS_MODULE_NAME} PROPERTIES

@@ -1,4 +1,8 @@
 add_executable(module-tests
+        oatpp-mcp/app/tools/Logger.cpp
+        oatpp-mcp/app/tools/Logger.hpp
+        oatpp-mcp/app/ServerTest.cpp
+        oatpp-mcp/app/ServerTest.hpp
         oatpp-mcp/tests.cpp
 )
 
