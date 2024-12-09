@@ -20,9 +20,10 @@ private:
 
 private:
   std::shared_ptr<Handle> m_handle;
+  std::shared_ptr<Session::Pinger> m_pinger;
 public:
 
-  Server();
+  Server(const std::shared_ptr<Session::Pinger>& pinger = nullptr);
 
   std::shared_ptr<Session> startNewSession(const std::shared_ptr<Session::EventListener>& listener);
 

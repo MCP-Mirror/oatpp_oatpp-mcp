@@ -8,11 +8,17 @@
 
 namespace oatpp { namespace mcp {
 
-Session::Session()
-  : m_inStream(std::make_shared<EventStream>())
+Session::Session(const std::shared_ptr<Pinger>& pinger)
+  : m_pinger(pinger)
+  , m_inStream(std::make_shared<EventStream>())
   , m_outStream(std::make_shared<EventStream>())
   , m_open(true)
 {}
+
+Session::~Session() {
+  close();
+  OATPP_LOGd("AAA", "Session::~Session()")
+}
 
 std::shared_ptr<EventStream> Session::getInStream() {
   return m_inStream;
@@ -30,9 +36,11 @@ void Session::listen(std::shared_ptr<EventListener> listener) {
   }
 
   while (isOpen()) {
-    auto event = m_inStream->read();
+    auto event = m_inStream->read(std::chrono::milliseconds(5000));
     if(event) {
       listener->onEvent(*this, event);
+    } else if (m_pinger) {
+      m_pinger->onPing(*this);
     }
   }
 
@@ -40,14 +48,21 @@ void Session::listen(std::shared_ptr<EventListener> listener) {
 
 bool Session::isOpen() {
   std::lock_guard<std::mutex> lock(m_mutex);
+  if(!m_inStream->isOpen()) {
+    closeNonBlocking();
+  }
   return m_open;
+}
+
+void Session::closeNonBlocking() {
+  m_open = false;
+  m_inStream->close();
+  m_outStream->close();
 }
 
 void Session::close() {
   std::lock_guard<std::mutex> lock(m_mutex);
-  m_open = false;
-  m_inStream->close();
-  m_outStream->close();
+  closeNonBlocking();
 }
 
 oatpp::String Session::getId() const {

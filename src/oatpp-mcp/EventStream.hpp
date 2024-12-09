@@ -10,6 +10,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <list>
+#include <chrono>
 
 namespace oatpp { namespace mcp {
 
@@ -27,7 +28,7 @@ struct Event {
 class EventInputStream {
 public:
   virtual ~EventInputStream() = default;
-  virtual Event read() = 0;
+  virtual Event read(const std::chrono::duration<v_int64, std::milli>& timeout) = 0;
 };
 
 class EventOutputStream {
@@ -50,9 +51,10 @@ public:
   explicit EventStream(v_uint32 maxQueueSize = 100);
 
   void post(const Event& event) override;
-  Event read() override;
+  Event read(const std::chrono::duration<v_int64, std::milli>& timeout = std::chrono::milliseconds(0)) override;
 
   void close();
+  bool isOpen();
 
 };
 

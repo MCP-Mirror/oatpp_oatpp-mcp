@@ -56,7 +56,9 @@ void ServerTest::onRun() {
   auto listener = std::make_shared<oatpp::mcp::Listener>();
   listener->addTool(std::make_shared<tools::Logger>());
 
-  auto mcpServer = std::make_shared<oatpp::mcp::Server>();
+  auto pinger = std::make_shared<oatpp::mcp::Pinger>();
+
+  auto mcpServer = std::make_shared<oatpp::mcp::Server>(pinger);
   auto sseController = std::make_shared<oatpp::mcp::sse::Controller>(mcpServer, listener, mappers);
 
 

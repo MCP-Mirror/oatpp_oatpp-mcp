@@ -16,6 +16,15 @@
 
 namespace oatpp { namespace mcp {
 
+class Pinger : public Session::Pinger {
+private:
+  std::atomic<v_uint64> m_pingId;
+  oatpp::json::ObjectMapper m_mapper;
+public:
+  Pinger();
+  void onPing(Session& session) override;
+};
+
 class Listener : public Session::EventListener {
 private:
   oatpp::json::ObjectMapper m_mapper;
@@ -27,6 +36,8 @@ private:
   void toolsCall(Session& session, const oatpp::Object<dto::RpcCall>& call);
   void toolsList(Session& session, const oatpp::Object<dto::RpcCall>& call);
   void onInitialize(Session& session, const oatpp::Object<dto::RpcCall>& call);
+private:
+  void onPing(Session& session, const oatpp::Object<dto::RpcCall>& call);
 private:
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Tool>> m_tools;
 public:

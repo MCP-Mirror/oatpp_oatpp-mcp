@@ -27,17 +27,26 @@ void EventStream::post(const Event& event) {
 
 }
 
-Event EventStream::read() {
+Event EventStream::read(const std::chrono::duration<v_int64, std::milli>& timeout) {
 
   Event result;
 
   std::unique_lock<std::mutex> lock(m_mutex);
 
-  while (m_queue.empty() && m_open) {
-    m_cv.wait(lock);
+  if(timeout.count() == 0) {
+    while (m_queue.empty() && m_open) {
+      m_cv.wait(lock);
+    }
+  } else {
+    auto now = std::chrono::system_clock::now();
+    auto waitUntil = now + timeout;
+    while (m_queue.empty() && m_open && now < waitUntil) {
+      m_cv.wait_until(lock, waitUntil);
+      now = std::chrono::system_clock::now();
+    }
   }
 
-  if(!m_open) return {};
+  if(!m_open || m_queue.empty()) return {};
 
   result = m_queue.front();
   m_queue.pop_front();
@@ -55,6 +64,11 @@ void EventStream::close() {
     m_open = false;
   }
   m_cv.notify_all();
+}
+
+bool EventStream::isOpen() {
+  std::lock_guard<std::mutex> lock(m_mutex);
+  return m_open;
 }
 
 }}

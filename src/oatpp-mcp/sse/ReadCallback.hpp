@@ -13,15 +13,16 @@ namespace oatpp { namespace mcp { namespace sse {
 
 class ReadCallback : public oatpp::data::stream::ReadCallback {
 private:
-  oatpp::String m_sessionId;
-  std::shared_ptr<EventInputStream> m_eventStream;
+  std::shared_ptr<Session> m_session;
   bool m_initialized;
 private:
   oatpp::String m_currMessage;
   oatpp::data::buffer::InlineWriteData m_inlineData;
 public:
 
-  ReadCallback(const oatpp::String& sessionId, const std::shared_ptr<EventInputStream>& eventStream);
+  ReadCallback(const std::shared_ptr<Session>& session);
+
+  ~ReadCallback() override;
 
   oatpp::String initEvent();
   oatpp::String waitEvent();

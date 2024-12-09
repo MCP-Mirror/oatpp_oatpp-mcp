@@ -4,9 +4,31 @@
 
 #include "Listener.hpp"
 
+#include "oatpp/utils/Conversion.hpp"
 #include "oatpp/base/Log.hpp"
 
 namespace oatpp { namespace mcp {
+
+Pinger::Pinger()
+  : m_pingId(0)
+{
+  m_mapper.serializerConfig().mapper.includeNullFields = false;
+}
+
+void Pinger::onPing(Session& session) {
+
+  m_pingId ++;
+
+  auto call = dto::RpcCall::createShared();
+  call->id = "ping_" + oatpp::utils::Conversion::uint64ToStr(m_pingId);
+  call->method = "ping";
+
+  Event event;
+  event.name = "message";
+  event.data = m_mapper.writeToString(call);
+  session.getOutStream()->post(event);
+
+}
 
 Listener::Listener() {
   m_mapper.serializerConfig().mapper.includeNullFields = false;
@@ -97,11 +119,27 @@ void Listener::onInitialize(Session& session, const oatpp::Object<dto::RpcCall>&
 
 }
 
+void Listener::onPing(Session& session, const oatpp::Object<dto::RpcCall>& call) {
+  auto rpcResult = dto::RpcResult::createShared();
+  rpcResult->id = call->id;
+  rpcResult->result->setMap({});
+  sendRpcResult(session, rpcResult);
+}
+
 void Listener::onEvent(Session& session, const Event& event) {
+
   OATPP_LOGd("Event", "[{}] --> : {}", session.getId(), event.data)
 
-  auto call = m_mapper.readFromString<oatpp::Object<dto::RpcCall>>(event.data);
-  if(call->method == "initialize") {
+  auto parsedEvent = m_mapper.readFromString<oatpp::Tree>(event.data);
+  if(!parsedEvent->isMap() || parsedEvent["method"].isNull() || parsedEvent["method"].isUndefined()) {
+    return; // message is NOT a call - IGNORE
+  }
+
+  auto call = m_remapper.remap<oatpp::Object<dto::RpcCall>>(parsedEvent);
+
+  if(call->method == "ping") {
+    onPing(session, call);
+  } else if(call->method == "initialize") {
     onInitialize(session, call);
   } else if(call->method == "tools/list") {
     toolsList(session, call);

@@ -41,7 +41,7 @@ public:
     auto session = m_server->startNewSession(m_eventListener);
 
     auto body = std::make_shared<oatpp::web::protocol::http::outgoing::StreamingBody>
-      (std::make_shared<ReadCallback>(session->getId(), session->getOutStream()));
+      (std::make_shared<ReadCallback>(session));
 
     auto response = OutgoingResponse::createShared(Status::CODE_200, body);
     response->putHeader("Cache-Control", "no-store");

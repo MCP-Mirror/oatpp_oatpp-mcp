@@ -14,6 +14,14 @@ namespace oatpp { namespace mcp {
 class Session {
 public:
 
+  class Pinger {
+  public:
+    virtual ~Pinger() = default;
+    virtual void onPing(Session& session) = 0;
+  };
+
+public:
+
   class EventListener {
   public:
     virtual ~EventListener() = default;
@@ -21,6 +29,9 @@ public:
   };
 
 private:
+  void closeNonBlocking();
+private:
+  std::shared_ptr<Pinger> m_pinger;
   std::shared_ptr<EventStream> m_inStream;
   std::shared_ptr<EventStream> m_outStream;
 private:
@@ -28,7 +39,9 @@ private:
   std::mutex m_mutex;
 public:
 
-  Session();
+  Session(const std::shared_ptr<Pinger>& pinger = nullptr);
+
+  ~Session();
 
   std::shared_ptr<EventStream> getInStream();
   std::shared_ptr<EventStream> getOutStream();

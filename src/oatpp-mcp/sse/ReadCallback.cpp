@@ -9,17 +9,21 @@
 
 namespace oatpp { namespace mcp { namespace sse {
 
-ReadCallback::ReadCallback(const oatpp::String& sessionId, const std::shared_ptr<EventInputStream>& eventStream)
-  : m_sessionId(sessionId)
-  , m_eventStream(eventStream)
+ReadCallback::ReadCallback(const std::shared_ptr<Session>& session)
+  : m_session(session)
   , m_initialized(false)
 {}
+
+ReadCallback::~ReadCallback()  {
+  OATPP_LOGd("AAA", "ReadCallback::~ReadCallback()")
+  m_session->close();
+}
 
 oatpp::String ReadCallback::initEvent() {
 
   Event event;
   event.name = "endpoint";
-  event.data = "/sessions/" + m_sessionId;
+  event.data = "/sessions/" + m_session->getId();
 
   oatpp::data::stream::BufferOutputStream ss(256);
   ss << "event: " << event.name << "\n";
@@ -29,9 +33,9 @@ oatpp::String ReadCallback::initEvent() {
 
 oatpp::String ReadCallback::waitEvent() {
 
-  auto event = m_eventStream->read();
+  auto event = m_session->getOutStream()->read(std::chrono::milliseconds(0) /* wait until event */);
 
-  OATPP_LOGd("Event", "[{}] <-- : {}", m_sessionId, event.data)
+  OATPP_LOGd("Event", "[{}] <-- : {}", m_session->getId(), event.data)
 
   if(event) {
     oatpp::data::stream::BufferOutputStream ss(256);
