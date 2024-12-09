@@ -7,7 +7,7 @@
 
 #include "ReadCallback.hpp"
 
-#include "../Server.hpp"
+#include "oatpp-mcp/Server.hpp"
 
 #include "oatpp/web/protocol/http/outgoing/StreamingBody.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"

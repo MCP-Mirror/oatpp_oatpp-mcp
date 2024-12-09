@@ -5,7 +5,7 @@
 #ifndef OATPP_MCP_SSE_READCALLBACK_HPP
 #define OATPP_MCP_SSE_READCALLBACK_HPP
 
-#include "../Session.hpp"
+#include "oatpp-mcp/Session.hpp"
 
 #include "oatpp/data/stream/Stream.hpp"
 
