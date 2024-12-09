@@ -9,23 +9,12 @@
 #include "oatpp-mcp/Server.hpp"
 
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
-#include "oatpp/web/mime/ContentMappers.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
 #include "oatpp/network/Server.hpp"
 
 namespace oatpp { namespace mcp { namespace app {
 
 namespace {
-
-std::shared_ptr<oatpp::web::mime::ContentMappers> createApiMappers() {
-  auto json = std::make_shared<oatpp::json::ObjectMapper>();
-  json->serializerConfig().json.useBeautifier = true;
-
-  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
-  mappers->putMapper(json);
-
-  return mappers;
-}
 
 void runHttpServer(const std::shared_ptr<oatpp::web::server::api::ApiController>& controller) {
 
