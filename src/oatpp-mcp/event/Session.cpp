@@ -28,6 +28,14 @@ std::shared_ptr<EventStream> Session::getOutStream() {
   return m_outStream;
 }
 
+void Session::setAssociatedData(const std::shared_ptr<AssociatedData>& data) {
+  m_data = data;
+}
+
+std::shared_ptr<Session::AssociatedData> Session::getAssociatedData() const {
+  return m_data;
+}
+
 void Session::listen(std::shared_ptr<EventListener> listener) {
 
   if(!listener) {

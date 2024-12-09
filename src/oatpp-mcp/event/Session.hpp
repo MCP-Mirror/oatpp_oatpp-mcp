@@ -28,6 +28,13 @@ public:
     virtual void onEvent(Session& session, const Event& event) = 0;
   };
 
+public:
+
+  class AssociatedData {
+  public:
+    virtual ~AssociatedData() = default;
+  };
+
 private:
   void closeNonBlocking();
 private:
@@ -37,6 +44,8 @@ private:
 private:
   bool m_open;
   std::mutex m_mutex;
+private:
+  std::shared_ptr<AssociatedData> m_data;
 public:
 
   Session(const std::shared_ptr<Pinger>& pinger = nullptr);
@@ -45,6 +54,18 @@ public:
 
   std::shared_ptr<EventStream> getInStream();
   std::shared_ptr<EventStream> getOutStream();
+
+  /**
+   * Associate any arbitrary data with session
+   * @param data
+   */
+  void setAssociatedData(const std::shared_ptr<AssociatedData>& data);
+
+  /**
+   * Get session associated data
+   * @return
+   */
+  std::shared_ptr<AssociatedData> getAssociatedData() const;
 
   /**
    * process session
