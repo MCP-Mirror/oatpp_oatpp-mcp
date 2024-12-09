@@ -6,8 +6,6 @@
 
 #include "tools/Logger.hpp"
 
-#include "oatpp-mcp/sse/Controller.hpp"
-#include "oatpp-mcp/Listener.hpp"
 #include "oatpp-mcp/Server.hpp"
 
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
@@ -49,21 +47,14 @@ void runHttpServer(const std::shared_ptr<oatpp::web::server::api::ApiController>
 
 void ServerTest::onRun() {
 
-  auto mappers = createApiMappers();
+  /* Create MCP server */
+  oatpp::mcp::Server server;
 
-  /* Setup MCP server endpoints */
-
-  auto listener = std::make_shared<oatpp::mcp::Listener>();
-  listener->addTool(std::make_shared<tools::Logger>());
-
-  auto pinger = std::make_shared<oatpp::mcp::Pinger>();
-
-  auto mcpServer = std::make_shared<oatpp::mcp::Server>(pinger);
-  auto sseController = std::make_shared<oatpp::mcp::sse::Controller>(mcpServer, listener, mappers);
-
+  /* Add tools*/
+  server.addTool(std::make_shared<tools::Logger>());
 
   /* Run HTTP server */
-  runHttpServer(sseController);
+  runHttpServer(server.getSseController());
 
 }
 

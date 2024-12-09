@@ -4,7 +4,7 @@
 
 #include "EventStream.hpp"
 
-namespace oatpp { namespace mcp {
+namespace oatpp { namespace mcp { namespace event {
 
 EventStream::EventStream(v_uint32 maxQueueSize)
   : m_maxQueueSize(maxQueueSize)
@@ -71,4 +71,4 @@ bool EventStream::isOpen() {
   return m_open;
 }
 
-}}
+}}}

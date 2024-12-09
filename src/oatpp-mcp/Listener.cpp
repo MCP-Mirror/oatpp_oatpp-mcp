@@ -15,7 +15,7 @@ Pinger::Pinger()
   m_mapper.serializerConfig().mapper.includeNullFields = false;
 }
 
-void Pinger::onPing(Session& session) {
+void Pinger::onPing(event::Session& session) {
 
   m_pingId ++;
 
@@ -23,7 +23,7 @@ void Pinger::onPing(Session& session) {
   call->id = "ping_" + oatpp::utils::Conversion::uint64ToStr(m_pingId);
   call->method = "ping";
 
-  Event event;
+  event::Event event;
   event.name = "message";
   event.data = m_mapper.writeToString(call);
   session.getOutStream()->post(event);
@@ -42,8 +42,8 @@ void Listener::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
   }
 }
 
-void Listener::sendRpcResult(Session& session, const oatpp::Object<dto::RpcResult>& result) {
-  Event event;
+void Listener::sendRpcResult(event::Session& session, const oatpp::Object<dto::RpcResult>& result) {
+  event::Event event;
   event.name = "message";
   event.data = m_mapper.writeToString(result);
 
@@ -59,7 +59,7 @@ oatpp::Object<dto::ServerCapabilities> Listener::getServerCapabilities() {
   return caps;
 }
 
-void Listener::toolsCall(Session& session, const oatpp::Object<dto::RpcCall>& call) {
+void Listener::toolsCall(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
 
   auto rpcResult = dto::RpcResult::createShared();
   rpcResult->id = call->id;
@@ -81,7 +81,7 @@ void Listener::toolsCall(Session& session, const oatpp::Object<dto::RpcCall>& ca
 
 }
 
-void Listener::toolsList(Session& session, const oatpp::Object<dto::RpcCall>& call) {
+void Listener::toolsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
 
   auto rpcResult = dto::RpcResult::createShared();
   rpcResult->id = call->id;
@@ -99,7 +99,7 @@ void Listener::toolsList(Session& session, const oatpp::Object<dto::RpcCall>& ca
 
 }
 
-void Listener::onInitialize(Session& session, const oatpp::Object<dto::RpcCall>& call) {
+void Listener::onInitialize(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
 
   auto rpcResult = dto::RpcResult::createShared();
   rpcResult->id = call->id;
@@ -119,14 +119,14 @@ void Listener::onInitialize(Session& session, const oatpp::Object<dto::RpcCall>&
 
 }
 
-void Listener::onPing(Session& session, const oatpp::Object<dto::RpcCall>& call) {
+void Listener::onPing(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
   auto rpcResult = dto::RpcResult::createShared();
   rpcResult->id = call->id;
   rpcResult->result->setMap({});
   sendRpcResult(session, rpcResult);
 }
 
-void Listener::onEvent(Session& session, const Event& event) {
+void Listener::onEvent(event::Session& session, const event::Event& event) {
 
   OATPP_LOGd("Event", "[{}] --> : {}", session.getId(), event.data)
 

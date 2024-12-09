@@ -6,7 +6,7 @@
 #include "oatpp/utils/Conversion.hpp"
 #include "oatpp/base/Log.hpp"
 
-namespace oatpp { namespace mcp {
+namespace oatpp { namespace mcp { namespace event {
 
 Session::Session(const std::shared_ptr<Pinger>& pinger)
   : m_pinger(pinger)
@@ -70,4 +70,4 @@ oatpp::String Session::getId() const {
   return oatpp::utils::Conversion::uint64ToStr(memId);
 }
 
-}}
+}}}

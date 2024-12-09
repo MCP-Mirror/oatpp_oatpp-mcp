@@ -9,7 +9,7 @@
 
 namespace oatpp { namespace mcp { namespace sse {
 
-ReadCallback::ReadCallback(const std::shared_ptr<Session>& session)
+ReadCallback::ReadCallback(const std::shared_ptr<event::Session>& session)
   : m_session(session)
   , m_initialized(false)
 {}
@@ -21,7 +21,7 @@ ReadCallback::~ReadCallback()  {
 
 oatpp::String ReadCallback::initEvent() {
 
-  Event event;
+  event::Event event;
   event.name = "endpoint";
   event.data = "/sessions/" + m_session->getId();
 

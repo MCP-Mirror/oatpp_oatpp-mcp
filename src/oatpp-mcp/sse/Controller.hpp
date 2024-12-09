@@ -7,7 +7,7 @@
 
 #include "ReadCallback.hpp"
 
-#include "oatpp-mcp/Server.hpp"
+#include "oatpp-mcp/event/Server.hpp"
 
 #include "oatpp/web/protocol/http/outgoing/StreamingBody.hpp"
 #include "oatpp/web/server/api/ApiController.hpp"
@@ -21,12 +21,12 @@ namespace oatpp { namespace mcp { namespace sse {
 
 class Controller : public oatpp::web::server::api::ApiController {
 private:
-  std::shared_ptr<Server> m_server;
-  std::shared_ptr<Session::EventListener> m_eventListener;
+  std::shared_ptr<event::Server> m_server;
+  std::shared_ptr<event::Session::EventListener> m_eventListener;
 public:
 
-  Controller(const std::shared_ptr<Server>& mcpServer,
-             const std::shared_ptr<Session::EventListener>& eventListener,
+  Controller(const std::shared_ptr<event::Server>& mcpServer,
+             const std::shared_ptr<event::Session::EventListener>& eventListener,
              OATPP_COMPONENT(std::shared_ptr<oatpp::web::mime::ContentMappers>, apiContentMappers))
     : oatpp::web::server::api::ApiController(apiContentMappers)
     , m_server(mcpServer)
@@ -57,7 +57,7 @@ public:
     auto session = m_server->getSession(sessionId);
     if(session) {
       auto stream = session->getInStream();
-      Event event;
+      event::Event event;
       event.name = "post";
       event.data = body;
       stream->post(event);

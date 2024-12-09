@@ -1,47 +1,34 @@
 //
-// Created by Leonid S on 12/8/24.
+// Created by Leonid S on 12/10/24.
 //
 
 #include "Server.hpp"
-
-#include "oatpp/base/Log.hpp"
-
-#include <thread>
+#include "oatpp/json/ObjectMapper.hpp"
+#include "oatpp/web/mime/ContentMappers.hpp"
 
 namespace oatpp { namespace mcp {
 
-Server::Server(const std::shared_ptr<Session::Pinger>& pinger)
-  : m_handle(std::make_shared<Handle>())
-  , m_pinger(pinger)
-{}
+Server::Server()
+  : m_pinger(std::make_shared<oatpp::mcp::Pinger>())
+  , m_eventListener(std::make_shared<oatpp::mcp::Listener>())
+  , m_eventServer(std::make_shared<oatpp::mcp::event::Server>(m_pinger))
+{
+  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+  json->serializerConfig().json.useBeautifier = true;
 
-std::shared_ptr<Session> Server::startNewSession(const std::shared_ptr<Session::EventListener>& listener) {
-
-  if(!m_handle) return nullptr;
-
-  auto session = std::make_shared<Session>(m_pinger);
-  m_handle->sessions[session->getId()] = session;
-
-  OATPP_LOGd("[oatpp::mcp::Server::startNewSession()]", "New session started {}", session->getId())
-
-  std::thread t([this, session, listener]{
-    session->listen(listener);
-    m_handle->sessions.erase(session->getId());
-    OATPP_LOGd("Server", "sessions count={}", m_handle->sessions.size())
-  });
-
-  t.detach();
-
-  return session;
+  m_mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+  m_mappers->putMapper(json);
 }
 
-std::shared_ptr<Session> Server::getSession(const oatpp::String& sessionId) const {
-  if(!m_handle) return nullptr;
-  auto it = m_handle->sessions.find(sessionId);
-  if(it != m_handle->sessions.end()) {
-    return it->second;
+void Server::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
+  m_eventListener->addTool(tool);
+}
+
+std::shared_ptr<web::server::api::ApiController> Server::getSseController() {
+  if(!m_sseController) {
+    m_sseController = std::make_shared<oatpp::mcp::sse::Controller>(m_eventServer, m_eventListener, m_mappers);
   }
-  return nullptr;
+  return m_sseController;
 }
 
 }}

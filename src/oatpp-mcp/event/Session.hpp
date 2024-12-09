@@ -2,14 +2,14 @@
 // Created by Leonid S on 12/8/24.
 //
 
-#ifndef OATPP_MCP_SESSION_HPP
-#define OATPP_MCP_SESSION_HPP
+#ifndef OATPP_MCP_EVENT_SESSION_HPP
+#define OATPP_MCP_EVENT_SESSION_HPP
 
 #include "EventStream.hpp"
 
 #include <memory>
 
-namespace oatpp { namespace mcp {
+namespace oatpp { namespace mcp { namespace event {
 
 class Session {
 public:
@@ -59,6 +59,6 @@ public:
 
 };
 
-}}
+}}}
 
-#endif //OATPP_MCP_SESSION_HPP
+#endif //OATPP_MCP_EVENT_SESSION_HPP

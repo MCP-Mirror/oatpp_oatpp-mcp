@@ -5,7 +5,7 @@
 #ifndef OATPP_MCP_SSE_READCALLBACK_HPP
 #define OATPP_MCP_SSE_READCALLBACK_HPP
 
-#include "oatpp-mcp/Session.hpp"
+#include "oatpp-mcp/event/Session.hpp"
 
 #include "oatpp/data/stream/Stream.hpp"
 
@@ -13,14 +13,14 @@ namespace oatpp { namespace mcp { namespace sse {
 
 class ReadCallback : public oatpp::data::stream::ReadCallback {
 private:
-  std::shared_ptr<Session> m_session;
+  std::shared_ptr<event::Session> m_session;
   bool m_initialized;
 private:
   oatpp::String m_currMessage;
   oatpp::data::buffer::InlineWriteData m_inlineData;
 public:
 
-  ReadCallback(const std::shared_ptr<Session>& session);
+  ReadCallback(const std::shared_ptr<event::Session>& session);
 
   ~ReadCallback() override;
 

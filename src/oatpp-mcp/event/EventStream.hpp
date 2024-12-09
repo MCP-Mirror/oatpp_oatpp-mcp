@@ -2,8 +2,8 @@
 // Created by Leonid S on 12/8/24.
 //
 
-#ifndef OATPP_MCP_EVENTSTREAM_HPP
-#define OATPP_MCP_EVENTSTREAM_HPP
+#ifndef OATPP_MCP_EVENT_EVENTSTREAM_HPP
+#define OATPP_MCP_EVENT_EVENTSTREAM_HPP
 
 #include "oatpp/Types.hpp"
 
@@ -12,7 +12,7 @@
 #include <list>
 #include <chrono>
 
-namespace oatpp { namespace mcp {
+namespace oatpp { namespace mcp { namespace event {
 
 struct Event {
 
@@ -58,6 +58,6 @@ public:
 
 };
 
-}}
+}}}
 
-#endif //OATPP_MCP_EVENTSTREAM_HPP
+#endif //OATPP_MCP_EVENT_EVENTSTREAM_HPP

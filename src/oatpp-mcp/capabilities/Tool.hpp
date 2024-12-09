@@ -6,7 +6,7 @@
 #define OATPP_MCP_CAPABILITIES_TOOL_HPP
 
 #include "oatpp-mcp/dto/Methods.hpp"
-#include "oatpp-mcp/Session.hpp"
+#include "oatpp-mcp/event/Session.hpp"
 
 namespace oatpp { namespace mcp { namespace capabilities {
 
