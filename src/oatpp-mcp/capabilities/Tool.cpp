@@ -3,8 +3,7 @@
 //
 
 #include "Tool.hpp"
-
-#include "oatpp/encoding/Base64.hpp"
+#include "Utils.hpp"
 
 #include <exception>
 
@@ -19,45 +18,23 @@ oatpp::Object<dto::ServerResultToolsCall> Tool::call(const oatpp::String& sessio
 }
 
 oatpp::Object<dto::ServerResultToolsCall> Tool::createTextResult(const oatpp::String& text, bool isError) {
-  oatpp::data::mapping::Tree content;
-
-  content["type"] = "text";
-  content["text"] = text;
-
   auto result = oatpp::mcp::dto::ServerResultToolsCall::createShared();
-  result->content = {content};
+  result->content = {Utils::createTextContent(text)};
   result->isError = isError;
-
   return result;
 }
 
 oatpp::Object<dto::ServerResultToolsCall> Tool::createImageResult(const oatpp::String& binaryImageData, const oatpp::String& mimeType) {
-  oatpp::data::mapping::Tree content;
-
-  content["type"] = "image";
-  content["data"] = oatpp::encoding::Base64::encode(binaryImageData);
-  content["mimeType"] = mimeType;
-
   auto result = oatpp::mcp::dto::ServerResultToolsCall::createShared();
-  result->content = {content};
+  result->content = {Utils::createImageContent(binaryImageData, mimeType)};
   result->isError = false;
-
   return result;
 }
 
 oatpp::Object<dto::ServerResultToolsCall> Tool::createResourceResult(const oatpp::String& uri, const oatpp::String& mimeType, const oatpp::String& text) {
-  oatpp::data::mapping::Tree content;
-
-  content["type"] = "resource";
-  auto& node = content["resource"];
-  node["uri"] = uri;
-  node["mimeType"] = mimeType;
-  node["text"] = text;
-
   auto result = oatpp::mcp::dto::ServerResultToolsCall::createShared();
-  result->content = {content};
+  result->content = {Utils::createResourceContent(uri, mimeType, text)};
   result->isError = false;
-
   return result;
 }
 

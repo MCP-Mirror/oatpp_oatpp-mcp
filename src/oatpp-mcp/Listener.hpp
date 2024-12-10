@@ -8,6 +8,7 @@
 #include "dto/JsonRpc.hpp"
 #include "dto/Methods.hpp"
 
+#include "capabilities/Prompt.hpp"
 #include "capabilities/Tool.hpp"
 
 #include "event/Session.hpp"
@@ -34,17 +35,21 @@ private:
   void sendRpcResult(event::Session& session, const oatpp::Object<dto::RpcResult>& result);
   oatpp::Object<dto::ServerCapabilities> getServerCapabilities();
 private:
+  void promptsGet(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
+  void promptsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void toolsCall(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void toolsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void onInitialize(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
 private:
   void onPing(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
 private:
+  std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Prompt>> m_prompts;
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Tool>> m_tools;
 public:
 
   Listener();
 
+  void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
 
   void onEvent(event::Session& session, const event::Event& event) override;

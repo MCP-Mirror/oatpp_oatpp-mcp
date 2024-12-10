@@ -25,6 +25,7 @@ public:
 
   virtual ~Server() = default;
 
+  void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
 
   /**

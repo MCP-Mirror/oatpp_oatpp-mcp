@@ -1,4 +1,6 @@
 add_executable(module-tests
+        oatpp-mcp/app/prompts/CodeReview.cpp
+        oatpp-mcp/app/prompts/CodeReview.hpp
         oatpp-mcp/app/tools/Logger.cpp
         oatpp-mcp/app/tools/Logger.hpp
         oatpp-mcp/app/ServerTest.cpp

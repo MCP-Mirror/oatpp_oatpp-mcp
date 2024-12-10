@@ -4,6 +4,7 @@
 
 #include "ServerTest.hpp"
 
+#include "prompts/CodeReview.hpp"
 #include "tools/Logger.hpp"
 
 #include "oatpp-mcp/Server.hpp"
@@ -39,7 +40,10 @@ void ServerTest::onRun() {
   /* Create MCP server */
   oatpp::mcp::Server server;
 
-  /* Add tools*/
+  /* Add prompts */
+  server.addPrompt(std::make_shared<prompts::CodeReview>());
+
+  /* Add tools */
   server.addTool(std::make_shared<tools::Logger>());
 
   /* Run HTTP server */

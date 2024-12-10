@@ -36,6 +36,9 @@ class ServerResultInitialize : oatpp::DTO {
 
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TOOLS
+
 class ClientParamsToolsList : oatpp::DTO {
 
   DTO_INIT(ClientParamsToolsList, DTO)
@@ -68,6 +71,58 @@ class ServerResultToolsCall : oatpp::DTO {
 
   DTO_FIELD(Vector<Tree>, content);
   DTO_FIELD(Boolean, isError);
+
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PROMPTS
+
+class ClientParamsPromptsList : oatpp::DTO {
+
+  DTO_INIT(ClientParamsPromptsList, DTO)
+
+  DTO_FIELD(String, cursor);
+
+};
+
+class ServerResultPromptsList : oatpp::DTO {
+
+  DTO_INIT(ServerResultPromptsList, DTO)
+
+  DTO_FIELD(Vector<Object<Prompt>>, prompts);
+  DTO_FIELD(String, nextCursor);
+
+};
+
+class ClientParamsPromptsCall : oatpp::DTO {
+
+  DTO_INIT(ClientParamsPromptsCall, DTO)
+
+  DTO_FIELD(String, name);
+  DTO_FIELD(Tree, arguments);
+
+};
+
+ENUM(Role, v_uint32,
+     VALUE(USER, 0, "user"),
+     VALUE(ASSISTANT, 1, "assistant")
+)
+
+class ServerResultPromptsMessage : oatpp::DTO {
+
+  DTO_INIT(ServerResultPromptsMessage, DTO)
+
+  DTO_FIELD(Enum<Role>::AsString, role);
+  DTO_FIELD(Tree, content);
+
+};
+
+class ServerResultPromptsCall : oatpp::DTO {
+
+  DTO_INIT(ServerResultPromptsCall, DTO)
+
+  DTO_FIELD(String, description);
+  DTO_FIELD(Vector<Object<ServerResultPromptsMessage>>, messages);
 
 };
 

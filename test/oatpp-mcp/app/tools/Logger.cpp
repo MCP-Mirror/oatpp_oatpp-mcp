@@ -4,6 +4,7 @@
 
 #include "Logger.hpp"
 
+#include "oatpp-mcp/capabilities/Utils.hpp"
 #include "oatpp/base/Log.hpp"
 
 namespace oatpp { namespace mcp { namespace app { namespace tools {

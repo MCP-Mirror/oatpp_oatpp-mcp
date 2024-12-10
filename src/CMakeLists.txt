@@ -1,7 +1,11 @@
 
 add_library(${OATPP_THIS_MODULE_NAME}
+        oatpp-mcp/capabilities/Prompt.cpp
+        oatpp-mcp/capabilities/Prompt.hpp
         oatpp-mcp/capabilities/Tool.cpp
         oatpp-mcp/capabilities/Tool.hpp
+        oatpp-mcp/capabilities/Utils.cpp
+        oatpp-mcp/capabilities/Utils.hpp
         oatpp-mcp/dto/Capabilities.hpp
         oatpp-mcp/dto/ClientInfo.hpp
         oatpp-mcp/dto/JsonRpc.hpp

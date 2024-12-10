@@ -20,9 +20,10 @@ public:
 
   oatpp::Object<dto::ServerResultToolsCall> call(const oatpp::String& sessionId, const oatpp::Tree& args);
 
-  oatpp::Object<dto::ServerResultToolsCall> createTextResult(const oatpp::String& text, bool isError = false);
-  oatpp::Object<dto::ServerResultToolsCall> createImageResult(const oatpp::String& binaryImageData, const oatpp::String& mimeType);
-  oatpp::Object<dto::ServerResultToolsCall> createResourceResult(const oatpp::String& uri, const oatpp::String& mimeType, const oatpp::String& text);
+  static oatpp::Object<dto::ServerResultToolsCall> createTextResult(const oatpp::String& text, bool isError = false);
+  static oatpp::Object<dto::ServerResultToolsCall> createImageResult(const oatpp::String& binaryImageData, const oatpp::String& mimeType);
+  static oatpp::Object<dto::ServerResultToolsCall> createResourceResult(const oatpp::String& uri, const oatpp::String& mimeType, const oatpp::String& text);
+
 
 };
 

@@ -35,6 +35,13 @@ Listener::Listener() {
   m_remapper.objectToTreeConfig().includeNullFields = false;
 }
 
+void Listener::addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt) {
+  auto description = prompt->describe();
+  if(description && description->name && !description->name->empty()) {
+    m_prompts[description->name] = prompt;
+  }
+}
+
 void Listener::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
   auto description = tool->describe();
   if(description && description->name && !description->name->empty()) {
@@ -57,6 +64,53 @@ oatpp::Object<dto::ServerCapabilities> Listener::getServerCapabilities() {
     caps->tools->listChanged = true;
   }
   return caps;
+}
+
+void Listener::promptsGet(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
+
+  auto rpcResult = dto::RpcResult::createShared();
+  rpcResult->id = call->id;
+
+  auto callParams = m_remapper.remap<oatpp::Object<dto::ClientParamsPromptsCall>>(call->params);
+  auto it = m_prompts.find(callParams->name);
+
+  if(it != m_prompts.end()) {
+    try {
+      auto result = it->second->call(session.getId(), callParams->arguments);
+      rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+    } catch (std::exception& e) {
+      oatpp::data::mapping::Tree error;
+      error["code"] = -32603;
+      error["message"] = oatpp::String("Unhandled error: ") + e.what();
+      rpcResult->error = error;
+    }
+  } else {
+    oatpp::data::mapping::Tree error;
+    error["code"] = -32602;
+    error["message"] = "Unknown tool: invalid_prompt_name";
+    rpcResult->error = error;
+  }
+
+  sendRpcResult(session, rpcResult);
+
+}
+
+void Listener::promptsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
+
+  auto rpcResult = dto::RpcResult::createShared();
+  rpcResult->id = call->id;
+
+  auto callParams = m_remapper.remap<oatpp::Object<dto::ClientParamsToolsList>>(call->params);
+
+  auto result = dto::ServerResultPromptsList::createShared();
+  result->prompts = {};
+  for(auto& p : m_prompts) {
+    result->prompts->push_back(p.second->describe());
+  }
+
+  rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+  sendRpcResult(session, rpcResult);
+
 }
 
 void Listener::toolsCall(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
@@ -145,6 +199,10 @@ void Listener::onEvent(event::Session& session, const event::Event& event) {
     toolsList(session, call);
   } else if(call->method == "tools/call") {
     toolsCall(session, call);
+  } else if(call->method == "prompts/list") {
+    promptsList(session, call);
+  } else if(call->method == "prompts/get") {
+    promptsGet(session, call);
   }
 
 }

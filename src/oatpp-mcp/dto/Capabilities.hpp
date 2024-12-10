@@ -12,6 +12,26 @@
 
 namespace oatpp { namespace mcp { namespace dto {
 
+class PromptArgument : public oatpp::DTO {
+
+  DTO_INIT(PromptArgument, DTO)
+
+  DTO_FIELD(String, name);
+  DTO_FIELD(String, description);
+  DTO_FIELD(Boolean, required);
+
+};
+
+class Prompt : public oatpp::DTO {
+
+  DTO_INIT(Prompt, DTO)
+
+  DTO_FIELD(String, name);
+  DTO_FIELD(String, description);
+  DTO_FIELD(Vector<Object<PromptArgument>>, arguments);
+
+};
+
 class Tool : public oatpp::DTO {
 
   DTO_INIT(Tool, DTO)

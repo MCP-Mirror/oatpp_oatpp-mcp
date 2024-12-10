@@ -20,6 +20,10 @@ Server::Server()
   m_mappers->putMapper(json);
 }
 
+void Server::addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt) {
+  m_eventListener->addPrompt(prompt);
+}
+
 void Server::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
   m_eventListener->addTool(tool);
 }
