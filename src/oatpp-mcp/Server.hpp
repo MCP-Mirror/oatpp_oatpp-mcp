@@ -35,6 +35,12 @@ public:
    */
   std::shared_ptr<web::server::api::ApiController> getSseController();
 
+  /**
+   * Listen to stdio.
+   * Make sure this server is the only one who reads/writes to stdio.
+   */
+  void stdioListen();
+
 };
 
 }}

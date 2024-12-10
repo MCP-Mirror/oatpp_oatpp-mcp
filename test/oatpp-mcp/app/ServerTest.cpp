@@ -48,6 +48,8 @@ void ServerTest::onRun() {
   /* Add tools */
   server.addTool(std::make_shared<tools::Logger>());
 
+  //server.stdioListen();
+
   /* Run HTTP server */
   runHttpServer(server.getSseController());
 

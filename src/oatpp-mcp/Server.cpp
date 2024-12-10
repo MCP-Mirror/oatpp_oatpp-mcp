@@ -6,6 +6,9 @@
 #include "oatpp/json/ObjectMapper.hpp"
 #include "oatpp/web/mime/ContentMappers.hpp"
 
+#include <iostream>
+#include <thread>
+
 namespace oatpp { namespace mcp {
 
 Server::Server()
@@ -33,6 +36,32 @@ std::shared_ptr<web::server::api::ApiController> Server::getSseController() {
     m_sseController = std::make_shared<oatpp::mcp::sse::Controller>(m_eventServer, m_eventListener, m_mappers);
   }
   return m_sseController;
+}
+
+void Server::stdioListen() {
+
+  auto session = m_eventServer->startNewSession(m_eventListener);
+
+  std::thread tin([session]{
+    std::string line;
+    while (std::getline(std::cin, line) && session->isOpen()) {
+      event::Event e;
+      e.name = "stdio";
+      e.data = line;
+      session->getInStream()->post(e);
+    }
+  });
+
+  std::thread tout([session]{
+    while (session->isOpen()) {
+      auto e = session->getOutStream()->read(std::chrono::milliseconds(0) /* wait until event */ );
+      std::cout << *e.data << std::endl;
+    }
+  });
+
+  tin.join();
+  tout.join();
+
 }
 
 }}
