@@ -122,8 +122,15 @@ void Listener::toolsCall(event::Session& session, const oatpp::Object<dto::RpcCa
   auto it = m_tools.find(callParams->name);
 
   if(it != m_tools.end()) {
-    auto result = it->second->call(session.getId(), callParams->arguments);
-    rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+
+    try {
+      auto result = it->second->call(session.getId(), callParams->arguments);
+      rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+    } catch (std::exception& e) {
+      auto result = capabilities::Tool::createTextResult(oatpp::String("Unhandled error: ") + e.what(), true);
+      rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+    }
+
   } else {
     oatpp::data::mapping::Tree error;
     error["code"] = -32602;

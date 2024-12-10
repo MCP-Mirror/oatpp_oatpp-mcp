@@ -23,7 +23,7 @@ oatpp::Object<dto::Tool> Logger::describe() const {
   return tool;
 }
 
-oatpp::Object<dto::ServerResultToolsCall> Logger::onCall(const oatpp::String& sessionId, const oatpp::Tree& args) {
+oatpp::Object<dto::ServerResultToolsCall> Logger::call(const oatpp::String& sessionId, const oatpp::Tree& args) {
   auto result = dto::ServerResultToolsCall::createShared();
 
   auto message = args["message"].getString();

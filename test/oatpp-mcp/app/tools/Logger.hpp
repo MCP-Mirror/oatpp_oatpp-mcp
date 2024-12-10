@@ -13,7 +13,7 @@ class Logger : public oatpp::mcp::capabilities::Tool {
 public:
 
   oatpp::Object<dto::Tool> describe() const override;
-  oatpp::Object<dto::ServerResultToolsCall> onCall(const oatpp::String& sessionId, const oatpp::Tree& args) override;
+  oatpp::Object<dto::ServerResultToolsCall> call(const oatpp::String& sessionId, const oatpp::Tree& args) override;
 
 };
 

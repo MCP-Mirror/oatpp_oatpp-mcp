@@ -9,14 +9,6 @@
 
 namespace oatpp { namespace mcp { namespace capabilities {
 
-oatpp::Object<dto::ServerResultToolsCall> Tool::call(const oatpp::String& sessionId, const oatpp::Tree& args) {
-  try {
-    return onCall(sessionId, args);
-  } catch (std::exception& e) {
-    return createTextResult(oatpp::String("Unhandled error: ") + e.what(), true);
-  }
-}
-
 oatpp::Object<dto::ServerResultToolsCall> Tool::createTextResult(const oatpp::String& text, bool isError) {
   auto result = oatpp::mcp::dto::ServerResultToolsCall::createShared();
   result->content = {Utils::createTextContent(text)};
