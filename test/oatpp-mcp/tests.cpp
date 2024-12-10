@@ -4,6 +4,15 @@
 
 namespace {
 
+class SilentLogger : public oatpp::Logger {
+public:
+
+  void log(v_uint32 priority, const std::string& tag, const std::string& message) override {
+    // Do nothing
+  }
+
+};
+
 void runTests() {
   OATPP_RUN_TEST(oatpp::mcp::app::ServerTest);
 }
@@ -12,7 +21,9 @@ void runTests() {
 
 int main() {
 
-  oatpp::Environment::init();
+  oatpp::Environment::init(
+    std::make_shared<SilentLogger>()
+  );
 
   runTests();
 
