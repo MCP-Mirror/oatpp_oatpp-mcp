@@ -5,7 +5,7 @@ Anthropic’s Model Context Protocol implementation for Oat++
 Read more:
 - [About Oat++](https://oatpp.io/)
 - [Oat++ Repository](https://github.com/oatpp/oatpp)
-- [Model Context Protocol](https://www.anthropic.com/news/model-context-protocol).
+- [Model Context Protocol](https://www.anthropic.com/news/model-context-protocol)
 
 ## Supported features
 
@@ -23,7 +23,7 @@ Read more:
 
 ### Pre Requirements
 
-- Install the main [oatpp](https://github.com/oatpp/oatpp) module.
+- Install the main [oatpp](https://github.com/oatpp/oatpp) module
 
 ### Install module
 
@@ -57,7 +57,7 @@ Find working example in tests `/test/oatpp-mcp/app/ServerTest.cpp`
   server.stdioListen(); 
 ```
 
-### Run SSE
+### Serve via SSE
 
 ```cpp
   /* Create MCP server */
