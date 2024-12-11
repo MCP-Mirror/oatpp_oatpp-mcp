@@ -8,19 +8,17 @@
 #include "Session.hpp"
 
 #include <unordered_map>
+#include <mutex>
 
 namespace oatpp { namespace mcp { namespace event {
 
 class Server {
 private:
-
-  struct Handle {
-    std::unordered_map<oatpp::String, std::shared_ptr<Session>> sessions;
-  };
-
-private:
-  std::shared_ptr<Handle> m_handle;
   std::shared_ptr<Session::Pinger> m_pinger;
+private:
+  std::unordered_map<oatpp::String, std::shared_ptr<Session>> m_sessions;
+private:
+  mutable std::mutex m_mutex;
 public:
 
   Server(const std::shared_ptr<Session::Pinger>& pinger = nullptr);
