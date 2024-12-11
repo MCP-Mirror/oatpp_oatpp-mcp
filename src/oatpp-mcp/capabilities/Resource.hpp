@@ -13,10 +13,18 @@ namespace oatpp { namespace mcp { namespace capabilities {
 class Resource {
 public:
 
-    virtual ~Resource() = default;
+  virtual ~Resource() = default;
 
-    virtual oatpp::Object<dto::Resource> describe() const = 0;
-    virtual oatpp::Object<dto::ServerResultResourceCall> call(const oatpp::String& sessionId) = 0;
+  virtual oatpp::Object<dto::Resource> describe() const = 0;
+  virtual oatpp::Object<dto::ServerResultResourceCall> call(const oatpp::String& sessionId) = 0;
+
+  static oatpp::Object<dto::ServerResultResourceContent> createTextContent(const oatpp::String& uri,
+                                                                           const oatpp::String& mimeType,
+                                                                           const oatpp::String& text);
+
+  static oatpp::Object<dto::ServerResultResourceContent> createBinaryContent(const oatpp::String& uri,
+                                                                             const oatpp::String& mimeType,
+                                                                             const oatpp::String& blob);
 
 };
 

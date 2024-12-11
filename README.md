@@ -17,6 +17,7 @@ Read more:
 ### Server features
 
 - [Prompts](https://spec.modelcontextprotocol.io/specification/server/prompts/)
+- [Resources](https://spec.modelcontextprotocol.io/specification/server/resources/)
 - [Tools](https://spec.modelcontextprotocol.io/specification/server/tools/)
 
 ## Build And Install
@@ -50,6 +51,9 @@ Find working example in tests `/test/oatpp-mcp/app/ServerTest.cpp`
   /* Add prompts */
   server.addPrompt(std::make_shared<prompts::CodeReview>());
 
+  /* Add resource */
+  server.addResource(std::make_shared<resource::File>());
+  
   /* Add tools */
   server.addTool(std::make_shared<tools::Logger>());
 
@@ -66,6 +70,9 @@ Find working example in tests `/test/oatpp-mcp/app/ServerTest.cpp`
   /* Add prompts */
   server.addPrompt(std::make_shared<prompts::CodeReview>());
 
+  /* Add resource */
+  server.addResource(std::make_shared<resource::File>());
+  
   /* Add tools */
   server.addTool(std::make_shared<tools::Logger>());
 

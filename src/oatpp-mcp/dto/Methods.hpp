@@ -128,28 +128,49 @@ class ServerResultPromptsCall : oatpp::DTO {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RESOURCES
+
 class ClientParamsResourceList : oatpp::DTO {
 
-    DTO_INIT(ClientParamsResourceList, DTO)
-    DTO_FIELD(String, cursor);
+  DTO_INIT(ClientParamsResourceList, DTO)
+
+  DTO_FIELD(String, cursor);
+
 };
 
 class ServerResultResourceList : oatpp::DTO {
 
-    DTO_INIT(ServerResultResourceList, DTO)
-    DTO_FIELD(Vector<Object<Resource>>, resources);
-    DTO_FIELD(String, nextCursor);
+  DTO_INIT(ServerResultResourceList, DTO)
+
+  DTO_FIELD(Vector<Object<Resource>>, resources);
+  DTO_FIELD(String, nextCursor);
+
 };
 
 class ClientParamsResourceRead : oatpp::DTO {
 
-    DTO_INIT(ClientParamsResourceRead, DTO)
-    DTO_FIELD(String, uri);
+  DTO_INIT(ClientParamsResourceRead, DTO)
+
+  DTO_FIELD(String, uri);
+
+};
+
+class ServerResultResourceContent : oatpp::DTO {
+
+  DTO_INIT(ServerResultResourceContent, DTO)
+
+  DTO_FIELD(String, uri);
+  DTO_FIELD(String, mimeType);
+  DTO_FIELD(String, text);
+  DTO_FIELD(String, blob);
+
 };
 
 class ServerResultResourceCall : oatpp::DTO {
-    DTO_INIT(ServerResultResourceCall, DTO)
-    DTO_FIELD(Vector<Tree>, contents);
+
+  DTO_INIT(ServerResultResourceCall, DTO)
+
+  DTO_FIELD(Vector<Object<ServerResultResourceContent>>, contents);
+
 };
 
 }}}

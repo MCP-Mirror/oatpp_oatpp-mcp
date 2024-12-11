@@ -10,9 +10,8 @@ namespace oatpp { namespace mcp { namespace app { namespace resource {
 
 class File : public oatpp::mcp::capabilities::Resource {
 public:
-
-    oatpp::Object<dto::Resource> describe() const override;
-    oatpp::Object<dto::ServerResultResourceCall> call(const oatpp::String& sessionId) override;
+  oatpp::Object<dto::Resource> describe() const override;
+  oatpp::Object<dto::ServerResultResourceCall> call(const oatpp::String& sessionId) override;
 };
 
 }}}}
