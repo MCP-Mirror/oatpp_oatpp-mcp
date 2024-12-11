@@ -126,6 +126,32 @@ class ServerResultPromptsCall : oatpp::DTO {
 
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// RESOURCES
+class ClientParamsResourceList : oatpp::DTO {
+
+    DTO_INIT(ClientParamsResourceList, DTO)
+    DTO_FIELD(String, cursor);
+};
+
+class ServerResultResourceList : oatpp::DTO {
+
+    DTO_INIT(ServerResultResourceList, DTO)
+    DTO_FIELD(Vector<Object<Resource>>, resources);
+    DTO_FIELD(String, nextCursor);
+};
+
+class ClientParamsResourceRead : oatpp::DTO {
+
+    DTO_INIT(ClientParamsResourceRead, DTO)
+    DTO_FIELD(String, uri);
+};
+
+class ServerResultResourceCall : oatpp::DTO {
+    DTO_INIT(ServerResultResourceCall, DTO)
+    DTO_FIELD(Vector<Tree>, contents);
+};
+
 }}}
 
 #include OATPP_CODEGEN_END(DTO)

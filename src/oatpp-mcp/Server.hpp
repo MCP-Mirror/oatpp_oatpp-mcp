@@ -27,6 +27,7 @@ public:
 
   void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
+  void addResource(const std::shared_ptr<capabilities::Resource>& resource);
 
   /**
    * (Lazy) Get ApiController with endpoints for
