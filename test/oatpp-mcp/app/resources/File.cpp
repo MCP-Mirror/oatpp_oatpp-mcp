@@ -23,6 +23,7 @@ oatpp::Object<dto::ServerResultResourceCall> File::call(const oatpp::String &ses
     content["uri"] = "file:///project/src/main.rs";
     content["mimeType"] = "text/x-rust";
     content["text"] = "fn main() {\n    println!(\"Hello world!\");\n}";
+    result->contents = {};
     result->contents->push_back(content);
     return result;
 }
