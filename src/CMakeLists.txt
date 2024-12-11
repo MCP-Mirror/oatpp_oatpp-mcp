@@ -25,6 +25,8 @@ add_library(${OATPP_THIS_MODULE_NAME}
         oatpp-mcp/Listener.hpp
         oatpp-mcp/Server.cpp
         oatpp-mcp/Server.hpp
+        oatpp-mcp/capabilities/Resource.hpp
+        oatpp-mcp/capabilities/Resource.cpp
 )
 
 set_target_properties(${OATPP_THIS_MODULE_NAME} PROPERTIES

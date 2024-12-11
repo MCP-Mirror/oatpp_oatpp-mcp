@@ -31,6 +31,10 @@ void Server::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
   m_eventListener->addTool(tool);
 }
 
+void Server::addResource(const std::shared_ptr<capabilities::Resource> &resource) {
+  m_eventListener->addResource(resource);
+}
+
 std::shared_ptr<web::server::api::ApiController> Server::getSseController() {
   if(!m_sseController) {
     m_sseController = std::make_shared<oatpp::mcp::sse::Controller>(m_eventServer, m_eventListener, m_mappers);

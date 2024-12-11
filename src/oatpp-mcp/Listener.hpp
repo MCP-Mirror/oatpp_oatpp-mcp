@@ -10,6 +10,7 @@
 
 #include "capabilities/Prompt.hpp"
 #include "capabilities/Tool.hpp"
+#include "capabilities/Resource.hpp"
 
 #include "event/Session.hpp"
 
@@ -35,6 +36,8 @@ private:
   void sendRpcResult(event::Session& session, const oatpp::Object<dto::RpcResult>& result);
   oatpp::Object<dto::ServerCapabilities> getServerCapabilities();
 private:
+  void resourcesList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
+  void resourcesRead(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void promptsGet(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void promptsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void toolsCall(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
@@ -45,13 +48,14 @@ private:
 private:
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Prompt>> m_prompts;
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Tool>> m_tools;
+  std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Resource>> m_resources;
 public:
 
   Listener();
 
   void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
-
+  void addResource(const std::shared_ptr<capabilities::Resource>& resource);
   void onEvent(event::Session& session, const event::Event& event) override;
 
 };

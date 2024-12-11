@@ -6,6 +6,8 @@ add_executable(module-tests
         oatpp-mcp/app/ServerTest.cpp
         oatpp-mcp/app/ServerTest.hpp
         oatpp-mcp/tests.cpp
+        oatpp-mcp/app/resources/File.hpp
+        oatpp-mcp/app/resources/File.cpp
 )
 
 set_target_properties(module-tests PROPERTIES

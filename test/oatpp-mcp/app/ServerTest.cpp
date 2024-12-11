@@ -6,6 +6,7 @@
 
 #include "prompts/CodeReview.hpp"
 #include "tools/Logger.hpp"
+#include "resources/File.hpp"
 
 #include "oatpp-mcp/Server.hpp"
 
@@ -47,6 +48,9 @@ void ServerTest::onRun() {
 
   /* Add tools */
   server.addTool(std::make_shared<tools::Logger>());
+
+  /* Add resource */
+  server.addResource(std::make_shared<resource::File>());
 
   //server.stdioListen();
 

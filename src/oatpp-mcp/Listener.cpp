@@ -49,6 +49,13 @@ void Listener::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
   }
 }
 
+void Listener::addResource(const std::shared_ptr<capabilities::Resource> &resource) {
+    auto description = resource->describe();
+    if(description && description->uri && !description->uri->empty()) {
+        m_resources[description->uri] = resource;
+    }
+}
+
 void Listener::sendRpcResult(event::Session& session, const oatpp::Object<dto::RpcResult>& result) {
   event::Event event;
   event.name = "message";
@@ -187,6 +194,50 @@ void Listener::onPing(event::Session& session, const oatpp::Object<dto::RpcCall>
   sendRpcResult(session, rpcResult);
 }
 
+void Listener::resourcesList(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
+    auto rpcResult = dto::RpcResult::createShared();
+    rpcResult->id = call->id;
+
+    auto callParams = m_remapper.remap<oatpp::Object<dto::ClientParamsResourceList>>(call->params);
+
+    auto result = dto::ServerResultResourceList::createShared();
+    result->resources = {};
+    for(auto& p : m_resources) {
+        result->resources->push_back(p.second->describe());
+    }
+
+    rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+    sendRpcResult(session, rpcResult);
+}
+
+void Listener::resourcesRead(event::Session& session, const oatpp::Object<dto::RpcCall>& call) {
+    auto rpcResult = dto::RpcResult::createShared();
+    rpcResult->id = call->id;
+
+    auto callParams = m_remapper.remap<oatpp::Object<dto::ClientParamsResourceRead>>(call->params);
+    auto it = m_resources.find(callParams->uri);
+
+    if(it != m_resources.end()) {
+        try {
+            auto result = it->second->call(session.getId());
+            rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+        } catch (std::exception& e) {
+            oatpp::data::mapping::Tree error;
+            error["code"] = -32603;
+            error["message"] = oatpp::String("Unhandled error: ") + e.what();
+            rpcResult->error = error;
+        }
+
+    } else {
+        oatpp::data::mapping::Tree error;
+        error["code"] = -32602;
+        error["message"] = "Resource not found: unknown_resource";
+        rpcResult->error = error;
+    }
+
+    sendRpcResult(session, rpcResult);
+}
+
 void Listener::onEvent(event::Session& session, const event::Event& event) {
 
   OATPP_LOGd("Event", "[{}] --> : {}", session.getId(), event.data)
@@ -210,6 +261,10 @@ void Listener::onEvent(event::Session& session, const event::Event& event) {
     promptsList(session, call);
   } else if(call->method == "prompts/get") {
     promptsGet(session, call);
+  } else if(call->method == "resources/list") {
+    resourcesList(session, call);
+  } else if(call->method == "resources/read") {
+    resourcesRead(session, call);
   }
 
 }
