@@ -29,7 +29,11 @@ oatpp::Object<dto::ServerResultToolsCall> Logger::call(const oatpp::String& sess
   auto message = args["message"].getString();
   OATPP_LOGd("[TOOL]", "LOGGING MESSAGE: {}", message)
 
-  return createTextResult("message was successfully logged");
+  result->content = {
+    capabilities::Utils::createTextContent("message was successfully logged")
+  };
+
+  return result;
 }
 
 }}}}

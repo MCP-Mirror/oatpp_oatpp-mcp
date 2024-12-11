@@ -4,6 +4,8 @@
 
 #include "Listener.hpp"
 
+#include "capabilities/Utils.hpp"
+
 #include "oatpp/utils/Conversion.hpp"
 #include "oatpp/base/Log.hpp"
 
@@ -134,7 +136,18 @@ void Listener::toolsCall(event::Session& session, const oatpp::Object<dto::RpcCa
       auto result = it->second->call(session.getId(), callParams->arguments);
       rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
     } catch (std::exception& e) {
-      auto result = capabilities::Tool::createTextResult(oatpp::String("Unhandled error: ") + e.what(), true);
+      auto result = dto::ServerResultToolsCall::createShared();
+      result->isError = true;
+      result->content = {
+        capabilities::Utils::createTextContent(oatpp::String("Unhandled error: ") + e.what())
+      };
+      rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
+    } catch (...) {
+      auto result = dto::ServerResultToolsCall::createShared();
+      result->isError = true;
+      result->content = {
+        capabilities::Utils::createTextContent("Tool handler thrown an unknown exception")
+      };
       rpcResult->result = m_remapper.remap<oatpp::Tree>(result);
     }
 

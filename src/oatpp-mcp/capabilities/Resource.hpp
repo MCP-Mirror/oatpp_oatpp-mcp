@@ -2,8 +2,8 @@
 // Created by David Mayboroda on 10/12/2024.
 //
 
-#ifndef OATPP_MCP_RESOURCE_HPP
-#define OATPP_MCP_RESOURCE_HPP
+#ifndef OATPP_MCP_CAPABILITIES_RESOURCE_HPP
+#define OATPP_MCP_CAPABILITIES_RESOURCE_HPP
 
 #include "oatpp-mcp/dto/Methods.hpp"
 #include "oatpp-mcp/event/Session.hpp"
@@ -29,4 +29,4 @@ public:
 };
 
 }}}
-#endif //OATPP_MCP_RESOURCE_HPP
+#endif //OATPP_MCP_CAPABILITIES_RESOURCE_HPP

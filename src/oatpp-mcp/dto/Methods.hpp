@@ -70,7 +70,7 @@ class ServerResultToolsCall : oatpp::DTO {
   DTO_INIT(ServerResultToolsCall, DTO)
 
   DTO_FIELD(Vector<Tree>, content);
-  DTO_FIELD(Boolean, isError);
+  DTO_FIELD(Boolean, isError) = false;
 
 };
 
