@@ -16,8 +16,8 @@ Session::Session(const std::shared_ptr<Pinger>& pinger)
 {}
 
 Session::~Session() {
+  OATPP_LOGd("[oatpp::mcp::event::Session::~Session()]", "Closing session")
   close();
-  OATPP_LOGd("AAA", "Session::~Session()")
 }
 
 std::shared_ptr<EventStream> Session::getInStream() {

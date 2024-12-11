@@ -15,7 +15,7 @@ ReadCallback::ReadCallback(const std::shared_ptr<event::Session>& session)
 {}
 
 ReadCallback::~ReadCallback()  {
-  OATPP_LOGd("AAA", "ReadCallback::~ReadCallback()")
+  OATPP_LOGd("[oatpp::mcp::sse::ReadCallback::~ReadCallback()]", "Closing session")
   m_session->close();
 }
 
