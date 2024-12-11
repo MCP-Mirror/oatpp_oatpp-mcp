@@ -16,7 +16,7 @@ oatpp::Object<dto::Resource> File::describe() const {
   return resource;
 }
 
-oatpp::Object<dto::ServerResultResourceCall> File::call(const oatpp::String &sessionId) {
+oatpp::Object<dto::ServerResultResourceCall> File::call(const oatpp::String &sessionId, const Router::Route& route) {
   auto result = dto::ServerResultResourceCall::createShared();
   result->contents = {
     createTextContent("file:///project/src/main.rs",

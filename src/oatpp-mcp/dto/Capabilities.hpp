@@ -33,12 +33,15 @@ class Prompt : public oatpp::DTO {
 };
 
 class Resource : public oatpp::DTO {
-    DTO_INIT(Resource, DTO)
 
-    DTO_FIELD(String, uri);
-    DTO_FIELD(String, name);
-    DTO_FIELD(String, description);
-    DTO_FIELD(String, mimeType);
+  DTO_INIT(Resource, DTO)
+
+  DTO_FIELD(String, uri);
+  DTO_FIELD(String, uriTemplate);
+  DTO_FIELD(String, name);
+  DTO_FIELD(String, description);
+  DTO_FIELD(String, mimeType);
+
 };
 
 class Tool : public oatpp::DTO {

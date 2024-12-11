@@ -146,6 +146,15 @@ class ServerResultResourceList : oatpp::DTO {
 
 };
 
+class ServerResultResourceTemplatesList : oatpp::DTO {
+
+  DTO_INIT(ServerResultResourceTemplatesList, DTO)
+
+  DTO_FIELD(Vector<Object<Resource>>, resourceTemplates);
+  DTO_FIELD(String, nextCursor);
+
+};
+
 class ClientParamsResourceRead : oatpp::DTO {
 
   DTO_INIT(ClientParamsResourceRead, DTO)

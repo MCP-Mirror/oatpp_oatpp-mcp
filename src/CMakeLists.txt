@@ -2,6 +2,8 @@
 add_library(${OATPP_THIS_MODULE_NAME}
         oatpp-mcp/capabilities/Prompt.cpp
         oatpp-mcp/capabilities/Prompt.hpp
+        oatpp-mcp/capabilities/Resource.hpp
+        oatpp-mcp/capabilities/Resource.cpp
         oatpp-mcp/capabilities/Tool.cpp
         oatpp-mcp/capabilities/Tool.hpp
         oatpp-mcp/capabilities/Utils.cpp
@@ -25,8 +27,6 @@ add_library(${OATPP_THIS_MODULE_NAME}
         oatpp-mcp/Listener.hpp
         oatpp-mcp/Server.cpp
         oatpp-mcp/Server.hpp
-        oatpp-mcp/capabilities/Resource.hpp
-        oatpp-mcp/capabilities/Resource.cpp
 )
 
 set_target_properties(${OATPP_THIS_MODULE_NAME} PROPERTIES

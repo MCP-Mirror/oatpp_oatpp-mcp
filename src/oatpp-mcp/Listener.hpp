@@ -13,7 +13,6 @@
 #include "capabilities/Resource.hpp"
 
 #include "event/Session.hpp"
-
 #include "oatpp/json/ObjectMapper.hpp"
 #include "oatpp/data/mapping/ObjectRemapper.hpp"
 
@@ -37,6 +36,7 @@ private:
   oatpp::Object<dto::ServerCapabilities> getServerCapabilities();
 private:
   void resourcesList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
+  void resourceTemplatesList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void resourcesRead(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void promptsGet(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
   void promptsList(event::Session& session, const oatpp::Object<dto::RpcCall>& call);
@@ -48,7 +48,9 @@ private:
 private:
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Prompt>> m_prompts;
   std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Tool>> m_tools;
-  std::unordered_map<oatpp::String, std::shared_ptr<capabilities::Resource>> m_resources;
+  capabilities::Resource::Router m_resourceRouter;
+  std::vector<std::shared_ptr<capabilities::Resource>> m_resources;
+  std::vector<std::shared_ptr<capabilities::Resource>> m_resourceTemplates;
 public:
 
   Listener();
@@ -56,6 +58,7 @@ public:
   void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
   void addResource(const std::shared_ptr<capabilities::Resource>& resource);
+
   void onEvent(event::Session& session, const event::Event& event) override;
 
 };

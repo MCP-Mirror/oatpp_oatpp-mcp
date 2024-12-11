@@ -1,13 +1,15 @@
 add_executable(module-tests
         oatpp-mcp/app/prompts/CodeReview.cpp
         oatpp-mcp/app/prompts/CodeReview.hpp
+        oatpp-mcp/app/resources/File.hpp
+        oatpp-mcp/app/resources/File.cpp
+        oatpp-mcp/app/resources/ProjectFiles.cpp
+        oatpp-mcp/app/resources/ProjectFiles.hpp
         oatpp-mcp/app/tools/Logger.cpp
         oatpp-mcp/app/tools/Logger.hpp
         oatpp-mcp/app/ServerTest.cpp
         oatpp-mcp/app/ServerTest.hpp
         oatpp-mcp/tests.cpp
-        oatpp-mcp/app/resources/File.hpp
-        oatpp-mcp/app/resources/File.cpp
 )
 
 set_target_properties(module-tests PROPERTIES
