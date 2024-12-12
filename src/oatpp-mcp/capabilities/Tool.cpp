@@ -163,12 +163,12 @@ oatpp::Object<dto::ServerResultToolsCall> EndpointTool::call(const oatpp::String
   std::shared_ptr<oatpp::web::protocol::http::outgoing::Body> body;
   auto bodyIt = stringArgs.find(m_endpoint->info()->body.name);
   if(bodyIt != stringArgs.end()) {
-    body = std::make_shared<oatpp::web::protocol::http::outgoing::BufferBody>(bodyIt->second, "text/plain");
+    body = std::make_shared<oatpp::web::protocol::http::outgoing::BufferBody>(bodyIt->second, "application/json");
   }
 
   auto response = m_apiBridge->getHttpExecutor()->execute(
     m_endpoint->info()->method,
-    m_endpoint->info()->path,
+    path,
     headers,
     body,
     nullptr
@@ -178,11 +178,22 @@ oatpp::Object<dto::ServerResultToolsCall> EndpointTool::call(const oatpp::String
     auto result = dto::ServerResultToolsCall::createShared();
     result->content = {capabilities::Utils::createTextContent("Null response")};
     result->isError = true;
+    return result;
   }
 
   oatpp::String bodyString = response->readBodyToString();
 
+  oatpp::data::stream::BufferOutputStream ss(256);
+  ss << "HTTP Response:\n";
+  ss << "code: " << response->getStatusCode() << "\n";
+  if(!bodyString->empty()) {
+    oatpp::String contentType = response->getHeader("content-type").getValue("not set");
+    ss << "content-type: " << contentType << "\n";
+    ss << "body: " << bodyString;
+  }
+
   auto result = dto::ServerResultToolsCall::createShared();
+  result->content = {Utils::createTextContent(ss.toString())};
   return result;
 }
 

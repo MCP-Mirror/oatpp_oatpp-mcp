@@ -26,18 +26,9 @@ namespace {
 
 void runHttpServer(oatpp::mcp::Server mcpServer) {
 
-  auto json = std::make_shared<oatpp::json::ObjectMapper>();
-  json->serializerConfig().json.useBeautifier = true;
-
-  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
-  mappers->putMapper(json);
-
-  auto userController = std::make_shared<UserController>(mappers);
-  mcpServer.addEndpoints(userController->getEndpoints());
-
   auto router = oatpp::web::server::HttpRouter::createShared();
   router->addController(mcpServer.getSseController());
-  router->addController(userController);
+  //router->addController(userController);
 
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared
     ({"0.0.0.0", 3001, oatpp::network::Address::IP_4});
@@ -54,22 +45,6 @@ void runHttpServer(oatpp::mcp::Server mcpServer) {
 
 void ServerTest::onRun() {
 
-  oatpp::json::ObjectMapper mapper;
-  mapper.serializerConfig().json.useBeautifier = true;
-
-  oatpp::mcp::utils::ObjectSchemaMapper schemaMapper;
-  {
-
-    oatpp::data::mapping::Tree defs;
-    oatpp::Tree schema = schemaMapper.map(oatpp::Vector<oatpp::Object<UserDto>>::Class::getType(), defs);
-    if(!defs.isUndefined()) {
-      schema["$defs"] = std::move(defs);
-    }
-    auto json = mapper.writeToString(schema);
-    OATPP_LOGd(TAG, "{}", json)
-  }
-
-
   /* Create MCP server */
   oatpp::mcp::Server server;
 
@@ -77,7 +52,7 @@ void ServerTest::onRun() {
   server.addPrompt(std::make_shared<prompts::CodeReview>());
 
   /* Add tools */
-  server.addTool(std::make_shared<tools::Logger>());
+  //server.addTool(std::make_shared<tools::Logger>());
 
   /* Add resource */
   server.addResource(std::make_shared<resource::File>());
@@ -85,10 +60,21 @@ void ServerTest::onRun() {
   /* Add resource template */
   server.addResource(std::make_shared<resource::ProjectFiles>());
 
-  //server.stdioListen();
+  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+  json->serializerConfig().json.useBeautifier = true;
+
+  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+  mappers->putMapper(json);
+  mappers->setDefaultMapper("application/json");
+
+  auto userController = std::make_shared<UserController>(mappers);
+  server.addEndpoints(userController->getEndpoints());
+
+
+  server.stdioListen();
 
   /* Run HTTP server */
-  runHttpServer(server);
+  //runHttpServer(server);
 
 }
 

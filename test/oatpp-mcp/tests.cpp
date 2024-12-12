@@ -22,7 +22,7 @@ void runTests() {
 int main() {
 
   oatpp::Environment::init(
-    //std::make_shared<SilentLogger>()
+    std::make_shared<SilentLogger>()
   );
 
   runTests();
