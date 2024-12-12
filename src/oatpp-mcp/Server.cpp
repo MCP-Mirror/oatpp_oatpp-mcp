@@ -16,11 +16,20 @@ Server::Server()
   , m_eventListener(std::make_shared<oatpp::mcp::Listener>())
   , m_eventServer(std::make_shared<oatpp::mcp::event::Server>(m_pinger))
 {
+
+  m_schemaMapper = std::make_shared<oatpp::mcp::utils::ObjectSchemaMapper>();
+
   auto json = std::make_shared<oatpp::json::ObjectMapper>();
   json->serializerConfig().json.useBeautifier = true;
 
   m_mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
   m_mappers->putMapper(json);
+
+  m_apiBridge = std::make_shared<utils::ApiBridge>();
+  std::thread t([this]{
+    m_apiBridge->run();
+  });
+  t.detach();
 }
 
 void Server::addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt) {
@@ -33,6 +42,21 @@ void Server::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
 
 void Server::addResource(const std::shared_ptr<capabilities::Resource> &resource) {
   m_eventListener->addResource(resource);
+}
+
+void Server::addEndpoints(const oatpp::web::server::api::Endpoints& endpoints) {
+
+  capabilities::EndpointTool::Components components;
+  components.schemaMapper = m_schemaMapper;
+  components.mappers = m_mappers;
+  components.apiBridge = m_apiBridge;
+
+  for(auto& endpoint : endpoints.list) {
+    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, components);
+    addTool(tool);
+    m_apiBridge->addEndpoint(endpoint);
+  }
+
 }
 
 std::shared_ptr<web::server::api::ApiController> Server::getSseController() {

@@ -23,6 +23,10 @@ add_library(${OATPP_THIS_MODULE_NAME}
         oatpp-mcp/sse/Controller.hpp
         oatpp-mcp/sse/ReadCallback.cpp
         oatpp-mcp/sse/ReadCallback.hpp
+        oatpp-mcp/utils/ApiBridge.cpp
+        oatpp-mcp/utils/ApiBridge.hpp
+        oatpp-mcp/utils/JsonSchema.cpp
+        oatpp-mcp/utils/JsonSchema.hpp
         oatpp-mcp/Listener.cpp
         oatpp-mcp/Listener.hpp
         oatpp-mcp/Server.cpp

@@ -80,6 +80,14 @@ oatpp::Object<dto::ServerCapabilities> Listener::getServerCapabilities() {
     caps->tools = dto::CapabilityDeclaration::createShared();
     caps->tools->listChanged = true;
   }
+  if(!m_resources.empty()) {
+    caps->resources = dto::CapabilityDeclaration::createShared();
+    caps->resources->listChanged = true;
+  }
+  if(!m_resourceTemplates.empty()) {
+    caps->prompts = dto::CapabilityDeclaration::createShared();
+    caps->prompts->listChanged = true;
+  }
   return caps;
 }
 

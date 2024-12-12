@@ -4,12 +4,15 @@
 
 #include "ServerTest.hpp"
 
+#include "api/controller/UserController.hpp"
+
 #include "prompts/CodeReview.hpp"
 #include "tools/Logger.hpp"
 #include "resources/File.hpp"
 #include "resources/ProjectFiles.hpp"
 
 #include "oatpp-mcp/Server.hpp"
+#include "oatpp-mcp/utils/JsonSchema.hpp"
 
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
@@ -21,10 +24,11 @@ namespace oatpp { namespace mcp { namespace app {
 
 namespace {
 
-void runHttpServer(const std::shared_ptr<oatpp::web::server::api::ApiController>& controller) {
+void runHttpServer(oatpp::mcp::Server mcpServer) {
 
   auto router = oatpp::web::server::HttpRouter::createShared();
-  router->addController(controller);
+  router->addController(mcpServer.getSseController());
+  //router->addController(userController);
 
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared
     ({"0.0.0.0", 3001, oatpp::network::Address::IP_4});
@@ -48,7 +52,7 @@ void ServerTest::onRun() {
   server.addPrompt(std::make_shared<prompts::CodeReview>());
 
   /* Add tools */
-  server.addTool(std::make_shared<tools::Logger>());
+  //server.addTool(std::make_shared<tools::Logger>());
 
   /* Add resource */
   server.addResource(std::make_shared<resource::File>());
@@ -56,10 +60,21 @@ void ServerTest::onRun() {
   /* Add resource template */
   server.addResource(std::make_shared<resource::ProjectFiles>());
 
-  //server.stdioListen();
+  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+  json->serializerConfig().json.useBeautifier = true;
+
+  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+  mappers->putMapper(json);
+  mappers->setDefaultMapper("application/json");
+
+  auto userController = std::make_shared<UserController>(mappers);
+  server.addEndpoints(userController->getEndpoints());
+
+
+  server.stdioListen();
 
   /* Run HTTP server */
-  runHttpServer(server.getSseController());
+  //runHttpServer(server);
 
 }
 
