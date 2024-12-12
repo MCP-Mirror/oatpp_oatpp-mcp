@@ -40,7 +40,7 @@ oatpp::Tree EndpointTool::generateEndpointSchema() const {
   }
 
   for(auto& hp : info.headers.getOrder()) {
-    auto& param = info.pathParams[hp];
+    auto& param = info.headers[hp];
     data::mapping::Tree req;
     req = param.name;
     required.getVector().push_back(req);
@@ -108,7 +108,7 @@ EndpointTool::Headers EndpointTool::prepareEndpointHeaders(const std::unordered_
   auto& info = *m_endpoint->info();
 
   for(auto& hp : info.headers.getOrder()) {
-    auto& param = info.queryParams[hp];
+    auto& param = info.headers[hp];
     auto it = args.find(param.name);
     if(it != args.end()) {
       result.put(it->first, it->second);
