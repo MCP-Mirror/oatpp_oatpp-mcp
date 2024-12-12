@@ -21,7 +21,7 @@ private:
   std::shared_ptr<oatpp::mcp::event::Server> m_eventServer;
 private:
   std::shared_ptr<oatpp::mcp::utils::ObjectSchemaMapper> m_schemaMapper;
-  std::shared_ptr<oatpp::web::mime::ContentMappers> m_mappers; // TODO - remove mappers
+  std::shared_ptr<oatpp::web::mime::ContentMappers> m_mappers;
   std::shared_ptr<oatpp::mcp::sse::Controller> m_sseController;
 private:
   std::shared_ptr<utils::ApiBridge> m_apiBridge;

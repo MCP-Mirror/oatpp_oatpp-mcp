@@ -27,6 +27,12 @@ public:
 };
 
 class EndpointTool : public Tool {
+public:
+  struct Components {
+    std::shared_ptr<utils::ApiBridge> apiBridge;
+    std::shared_ptr<mcp::utils::ObjectSchemaMapper> schemaMapper;
+    std::shared_ptr<oatpp::web::mime::ContentMappers> mappers;
+  };
 private:
   typedef oatpp::web::protocol::http::Headers Headers;
 private:
@@ -41,14 +47,11 @@ private:
   Headers prepareEndpointHeaders(const std::unordered_map<oatpp::String, oatpp::String>& args, Error& error) const;
 private:
   std::shared_ptr<web::server::api::Endpoint> m_endpoint;
-  std::shared_ptr<mcp::utils::ObjectSchemaMapper> m_schemaMapper;
-private:
-  std::shared_ptr<utils::ApiBridge> m_apiBridge;
+  Components m_components;
 public:
 
   EndpointTool(const std::shared_ptr<web::server::api::Endpoint>& endpoint,
-               const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper,
-               const std::shared_ptr<utils::ApiBridge>& apiBridge);
+               const Components& components);
 
   oatpp::Object<dto::Tool> describe() const override;
   oatpp::Object<dto::ServerResultToolsCall> call(const oatpp::String& sessionId, const oatpp::Tree& args) override;

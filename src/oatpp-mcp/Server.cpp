@@ -45,11 +45,18 @@ void Server::addResource(const std::shared_ptr<capabilities::Resource> &resource
 }
 
 void Server::addEndpoints(const oatpp::web::server::api::Endpoints& endpoints) {
+
+  capabilities::EndpointTool::Components components;
+  components.schemaMapper = m_schemaMapper;
+  components.mappers = m_mappers;
+  components.apiBridge = m_apiBridge;
+
   for(auto& endpoint : endpoints.list) {
-    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, m_schemaMapper, m_apiBridge);
+    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, components);
     addTool(tool);
     m_apiBridge->addEndpoint(endpoint);
   }
+
 }
 
 std::shared_ptr<web::server::api::ApiController> Server::getSseController() {

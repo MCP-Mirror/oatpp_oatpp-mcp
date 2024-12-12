@@ -15,11 +15,9 @@ namespace oatpp { namespace mcp { namespace capabilities {
 // EndpointTool
 
 EndpointTool::EndpointTool(const std::shared_ptr<web::server::api::Endpoint>& endpoint,
-                           const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper,
-                           const std::shared_ptr<utils::ApiBridge>& apiBridge)
+                           const Components& components)
   : m_endpoint(endpoint)
-  , m_schemaMapper(schemaMapper)
-  , m_apiBridge(apiBridge)
+  , m_components(components)
 {}
 
 oatpp::Tree EndpointTool::generateEndpointSchema() const {
@@ -42,7 +40,7 @@ oatpp::Tree EndpointTool::generateEndpointSchema() const {
     data::mapping::Tree req;
     req = param.name;
     required.getVector().push_back(req);
-    params[param.name] = m_schemaMapper->map(param.type, defs);
+    params[param.name] = m_components.schemaMapper->map(param.type, defs);
   }
 
   for(auto& hp : info.headers.getOrder()) {
@@ -50,7 +48,7 @@ oatpp::Tree EndpointTool::generateEndpointSchema() const {
     data::mapping::Tree req;
     req = param.name;
     required.getVector().push_back(req);
-    params[param.name] = m_schemaMapper->map(param.type, defs);
+    params[param.name] = m_components.schemaMapper->map(param.type, defs);
   }
 
   for(auto& qp : info.queryParams.getOrder()) {
@@ -60,7 +58,7 @@ oatpp::Tree EndpointTool::generateEndpointSchema() const {
       req = param.name;
       required.getVector().push_back(req);
     }
-    params[param.name] = m_schemaMapper->map(param.type, defs);
+    params[param.name] = m_components.schemaMapper->map(param.type, defs);
   }
 
   if(info.body.name != nullptr && info.body.type != nullptr) {
@@ -70,7 +68,7 @@ oatpp::Tree EndpointTool::generateEndpointSchema() const {
       req = param.name;
       required.getVector().push_back(req);
     }
-    params[param.name] = m_schemaMapper->map(param.type, defs);
+    params[param.name] = m_components.schemaMapper->map(param.type, defs);
   }
 
   if(!defs.isUndefined()) {
@@ -155,7 +153,7 @@ oatpp::Object<dto::ServerResultToolsCall> EndpointTool::call(const oatpp::String
   auto path = prepareEndpointPath(stringArgs, error);
   auto headers = prepareEndpointHeaders(stringArgs, error);
 
-  OATPP_LOGi("EndpointTool::call", "path: '{}'", path)
+  OATPP_LOGi("EndpointTool::call", "method: {}, path: '{}'", m_endpoint->info()->method, path)
   for(auto& h : headers.getAll()) {
     OATPP_LOGi("EndpointTool::call", "Header: {}: '{}'", h.first.toString(), h.second.toString())
   }
@@ -163,10 +161,19 @@ oatpp::Object<dto::ServerResultToolsCall> EndpointTool::call(const oatpp::String
   std::shared_ptr<oatpp::web::protocol::http::outgoing::Body> body;
   auto bodyIt = stringArgs.find(m_endpoint->info()->body.name);
   if(bodyIt != stringArgs.end()) {
-    body = std::make_shared<oatpp::web::protocol::http::outgoing::BufferBody>(bodyIt->second, "application/json");
+    auto& bodyTree = args[m_endpoint->info()->body.name];
+    oatpp::String content = bodyIt->second;
+    if(bodyTree.isMap() || bodyTree.isPairs() || bodyTree.isVector()) {
+      auto mapper = m_components.mappers->getDefaultMapper();
+      if(!mapper) throw std::runtime_error("No default mapper found to serialize body. Try to sending body as serialized string instead of an object.");
+      oatpp::Tree polymorph = bodyTree;
+      content = mapper->writeToString(polymorph);
+    }
+    body = std::make_shared<oatpp::web::protocol::http::outgoing::BufferBody>(content, "application/json");
+    OATPP_LOGd("[oatpp::mcp::capabilities::EndpointTool::call()]", "body content='{}'", content)
   }
 
-  auto response = m_apiBridge->getHttpExecutor()->execute(
+  auto response = m_components.apiBridge->getHttpExecutor()->execute(
     m_endpoint->info()->method,
     path,
     headers,
