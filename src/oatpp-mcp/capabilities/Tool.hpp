@@ -5,6 +5,8 @@
 #ifndef OATPP_MCP_CAPABILITIES_TOOL_HPP
 #define OATPP_MCP_CAPABILITIES_TOOL_HPP
 
+#include "oatpp-mcp/utils/ApiBridge.hpp"
+
 #include "oatpp-mcp/dto/Methods.hpp"
 #include "oatpp-mcp/event/Session.hpp"
 #include "oatpp-mcp/utils/JsonSchema.hpp"
@@ -40,10 +42,13 @@ private:
 private:
   std::shared_ptr<web::server::api::Endpoint> m_endpoint;
   std::shared_ptr<mcp::utils::ObjectSchemaMapper> m_schemaMapper;
+private:
+  std::shared_ptr<utils::ApiBridge> m_apiBridge;
 public:
 
   EndpointTool(const std::shared_ptr<web::server::api::Endpoint>& endpoint,
-               const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper);
+               const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper,
+               const std::shared_ptr<utils::ApiBridge>& apiBridge);
 
   oatpp::Object<dto::Tool> describe() const override;
   oatpp::Object<dto::ServerResultToolsCall> call(const oatpp::String& sessionId, const oatpp::Tree& args) override;

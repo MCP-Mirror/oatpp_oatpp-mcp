@@ -3,6 +3,10 @@
 //
 
 #include "Tool.hpp"
+
+#include "oatpp-mcp/capabilities/Utils.hpp"
+
+#include "oatpp/web/protocol/http/outgoing/BufferBody.hpp"
 #include "oatpp/base/Log.hpp"
 
 namespace oatpp { namespace mcp { namespace capabilities {
@@ -11,9 +15,11 @@ namespace oatpp { namespace mcp { namespace capabilities {
 // EndpointTool
 
 EndpointTool::EndpointTool(const std::shared_ptr<web::server::api::Endpoint>& endpoint,
-                           const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper)
+                           const std::shared_ptr<mcp::utils::ObjectSchemaMapper>& schemaMapper,
+                           const std::shared_ptr<utils::ApiBridge>& apiBridge)
   : m_endpoint(endpoint)
   , m_schemaMapper(schemaMapper)
+  , m_apiBridge(apiBridge)
 {}
 
 oatpp::Tree EndpointTool::generateEndpointSchema() const {
@@ -153,6 +159,28 @@ oatpp::Object<dto::ServerResultToolsCall> EndpointTool::call(const oatpp::String
   for(auto& h : headers.getAll()) {
     OATPP_LOGi("EndpointTool::call", "Header: {}: '{}'", h.first.toString(), h.second.toString())
   }
+
+  std::shared_ptr<oatpp::web::protocol::http::outgoing::Body> body;
+  auto bodyIt = stringArgs.find(m_endpoint->info()->body.name);
+  if(bodyIt != stringArgs.end()) {
+    body = std::make_shared<oatpp::web::protocol::http::outgoing::BufferBody>(bodyIt->second, "text/plain");
+  }
+
+  auto response = m_apiBridge->getHttpExecutor()->execute(
+    m_endpoint->info()->method,
+    m_endpoint->info()->path,
+    headers,
+    body,
+    nullptr
+  );
+
+  if(!response) {
+    auto result = dto::ServerResultToolsCall::createShared();
+    result->content = {capabilities::Utils::createTextContent("Null response")};
+    result->isError = true;
+  }
+
+  oatpp::String bodyString = response->readBodyToString();
 
   auto result = dto::ServerResultToolsCall::createShared();
   return result;

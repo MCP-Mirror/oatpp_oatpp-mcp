@@ -24,6 +24,12 @@ Server::Server()
 
   m_mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
   m_mappers->putMapper(json);
+
+  m_apiBridge = std::make_shared<utils::ApiBridge>();
+  std::thread t([this]{
+    m_apiBridge->run();
+  });
+  t.detach();
 }
 
 void Server::addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt) {
@@ -40,8 +46,9 @@ void Server::addResource(const std::shared_ptr<capabilities::Resource> &resource
 
 void Server::addEndpoints(const oatpp::web::server::api::Endpoints& endpoints) {
   for(auto& endpoint : endpoints.list) {
-    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, m_schemaMapper);
+    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, m_schemaMapper, m_apiBridge);
     addTool(tool);
+    m_apiBridge->addEndpoint(endpoint);
   }
 }
 

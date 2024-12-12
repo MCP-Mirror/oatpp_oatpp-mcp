@@ -6,8 +6,11 @@
 #define OATPP_MCP_SERVER_HPP
 
 #include "Listener.hpp"
+
 #include "event/Server.hpp"
 #include "sse/Controller.hpp"
+
+#include "utils/ApiBridge.hpp"
 
 namespace oatpp { namespace mcp {
 
@@ -20,6 +23,8 @@ private:
   std::shared_ptr<oatpp::mcp::utils::ObjectSchemaMapper> m_schemaMapper;
   std::shared_ptr<oatpp::web::mime::ContentMappers> m_mappers; // TODO - remove mappers
   std::shared_ptr<oatpp::mcp::sse::Controller> m_sseController;
+private:
+  std::shared_ptr<utils::ApiBridge> m_apiBridge;
 public:
 
   Server();
