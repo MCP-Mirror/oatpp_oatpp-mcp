@@ -4,12 +4,15 @@
 
 #include "ServerTest.hpp"
 
+#include "api/controller/UserController.hpp"
+
 #include "prompts/CodeReview.hpp"
 #include "tools/Logger.hpp"
 #include "resources/File.hpp"
 #include "resources/ProjectFiles.hpp"
 
 #include "oatpp-mcp/Server.hpp"
+#include "oatpp-mcp/utils/JsonSchema.hpp"
 
 #include "oatpp/web/server/HttpConnectionHandler.hpp"
 #include "oatpp/network/tcp/server/ConnectionProvider.hpp"
@@ -21,10 +24,20 @@ namespace oatpp { namespace mcp { namespace app {
 
 namespace {
 
-void runHttpServer(const std::shared_ptr<oatpp::web::server::api::ApiController>& controller) {
+void runHttpServer(oatpp::mcp::Server mcpServer) {
+
+  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+  json->serializerConfig().json.useBeautifier = true;
+
+  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+  mappers->putMapper(json);
+
+  auto userController = std::make_shared<UserController>(mappers);
+  mcpServer.addEndpoints(userController->getEndpoints());
 
   auto router = oatpp::web::server::HttpRouter::createShared();
-  router->addController(controller);
+  router->addController(mcpServer.getSseController());
+  router->addController(userController);
 
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared
     ({"0.0.0.0", 3001, oatpp::network::Address::IP_4});
@@ -40,6 +53,22 @@ void runHttpServer(const std::shared_ptr<oatpp::web::server::api::ApiController>
 }
 
 void ServerTest::onRun() {
+
+  oatpp::json::ObjectMapper mapper;
+  mapper.serializerConfig().json.useBeautifier = true;
+
+  oatpp::mcp::utils::ObjectSchemaMapper schemaMapper;
+  {
+
+    oatpp::data::mapping::Tree defs;
+    oatpp::Tree schema = schemaMapper.map(oatpp::Vector<oatpp::Object<UserDto>>::Class::getType(), defs);
+    if(!defs.isUndefined()) {
+      schema["$defs"] = std::move(defs);
+    }
+    auto json = mapper.writeToString(schema);
+    OATPP_LOGd(TAG, "{}", json)
+  }
+
 
   /* Create MCP server */
   oatpp::mcp::Server server;
@@ -59,7 +88,7 @@ void ServerTest::onRun() {
   //server.stdioListen();
 
   /* Run HTTP server */
-  runHttpServer(server.getSseController());
+  runHttpServer(server);
 
 }
 

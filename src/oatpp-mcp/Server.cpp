@@ -16,6 +16,9 @@ Server::Server()
   , m_eventListener(std::make_shared<oatpp::mcp::Listener>())
   , m_eventServer(std::make_shared<oatpp::mcp::event::Server>(m_pinger))
 {
+
+  m_schemaMapper = std::make_shared<oatpp::mcp::utils::ObjectSchemaMapper>();
+
   auto json = std::make_shared<oatpp::json::ObjectMapper>();
   json->serializerConfig().json.useBeautifier = true;
 
@@ -33,6 +36,13 @@ void Server::addTool(const std::shared_ptr<capabilities::Tool>& tool) {
 
 void Server::addResource(const std::shared_ptr<capabilities::Resource> &resource) {
   m_eventListener->addResource(resource);
+}
+
+void Server::addEndpoints(const oatpp::web::server::api::Endpoints& endpoints) {
+  for(auto& endpoint : endpoints.list) {
+    auto tool = std::make_shared<capabilities::EndpointTool>(endpoint, m_schemaMapper);
+    addTool(tool);
+  }
 }
 
 std::shared_ptr<web::server::api::ApiController> Server::getSseController() {

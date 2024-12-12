@@ -17,6 +17,7 @@ private:
   std::shared_ptr<oatpp::mcp::Listener> m_eventListener;
   std::shared_ptr<oatpp::mcp::event::Server> m_eventServer;
 private:
+  std::shared_ptr<oatpp::mcp::utils::ObjectSchemaMapper> m_schemaMapper;
   std::shared_ptr<oatpp::web::mime::ContentMappers> m_mappers; // TODO - remove mappers
   std::shared_ptr<oatpp::mcp::sse::Controller> m_sseController;
 public:
@@ -28,6 +29,8 @@ public:
   void addPrompt(const std::shared_ptr<capabilities::Prompt>& prompt);
   void addTool(const std::shared_ptr<capabilities::Tool>& tool);
   void addResource(const std::shared_ptr<capabilities::Resource>& resource);
+
+  void addEndpoints(const oatpp::web::server::api::Endpoints& endpoints);
 
   /**
    * (Lazy) Get ApiController with endpoints for

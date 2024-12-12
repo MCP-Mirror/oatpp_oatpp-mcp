@@ -1,4 +1,8 @@
 add_executable(module-tests
+        oatpp-mcp/app/api/controller/UserController.hpp
+        oatpp-mcp/app/api/dto/PageDto.hpp
+        oatpp-mcp/app/api/dto/StatusDto.hpp
+        oatpp-mcp/app/api/dto/UserDto.hpp
         oatpp-mcp/app/prompts/CodeReview.cpp
         oatpp-mcp/app/prompts/CodeReview.hpp
         oatpp-mcp/app/resources/File.hpp
