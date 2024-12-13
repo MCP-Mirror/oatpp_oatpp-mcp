@@ -27,8 +27,9 @@ public:
 
   Controller(const std::shared_ptr<event::Server>& mcpServer,
              const std::shared_ptr<event::Session::EventListener>& eventListener,
-             OATPP_COMPONENT(std::shared_ptr<oatpp::web::mime::ContentMappers>, apiContentMappers))
-    : oatpp::web::server::api::ApiController(apiContentMappers)
+             OATPP_COMPONENT(std::shared_ptr<oatpp::web::mime::ContentMappers>, apiContentMappers),
+             const oatpp::String& apiPrefix = nullptr)
+    : oatpp::web::server::api::ApiController(apiContentMappers, apiPrefix)
     , m_server(mcpServer)
     , m_eventListener(eventListener)
   {}
@@ -41,7 +42,7 @@ public:
     auto session = m_server->startNewSession(m_eventListener);
 
     auto body = std::make_shared<oatpp::web::protocol::http::outgoing::StreamingBody>
-      (std::make_shared<ReadCallback>(session));
+      (std::make_shared<ReadCallback>(session, m_routerPrefix));
 
     auto response = OutgoingResponse::createShared(Status::CODE_200, body);
     response->putHeader("Cache-Control", "no-store");

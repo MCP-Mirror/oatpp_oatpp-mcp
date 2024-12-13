@@ -28,7 +28,18 @@ void runHttpServer(oatpp::mcp::Server mcpServer) {
 
   auto router = oatpp::web::server::HttpRouter::createShared();
   router->addController(mcpServer.getSseController());
-  //router->addController(userController);
+
+
+  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+  json->serializerConfig().json.useBeautifier = true;
+
+  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+  mappers->putMapper(json);
+  mappers->setDefaultMapper("application/json");
+
+  auto userController = std::make_shared<UserController>(mappers);
+  mcpServer.addEndpoints(userController->getEndpoints());
+
 
   auto connectionProvider = oatpp::network::tcp::server::ConnectionProvider::createShared
     ({"0.0.0.0", 3001, oatpp::network::Address::IP_4});
@@ -46,7 +57,7 @@ void runHttpServer(oatpp::mcp::Server mcpServer) {
 void ServerTest::onRun() {
 
   /* Create MCP server */
-  oatpp::mcp::Server server;
+  oatpp::mcp::Server server({"mcp/"});
 
   /* Add prompts */
   server.addPrompt(std::make_shared<prompts::CodeReview>());
@@ -60,21 +71,21 @@ void ServerTest::onRun() {
   /* Add resource template */
   server.addResource(std::make_shared<resource::ProjectFiles>());
 
-  auto json = std::make_shared<oatpp::json::ObjectMapper>();
-  json->serializerConfig().json.useBeautifier = true;
+//  auto json = std::make_shared<oatpp::json::ObjectMapper>();
+//  json->serializerConfig().json.useBeautifier = true;
+//
+//  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
+//  mappers->putMapper(json);
+//  mappers->setDefaultMapper("application/json");
+//
+//  auto userController = std::make_shared<UserController>(mappers);
+//  server.addEndpoints(userController->getEndpoints());
 
-  auto mappers = std::make_shared<oatpp::web::mime::ContentMappers>();
-  mappers->putMapper(json);
-  mappers->setDefaultMapper("application/json");
 
-  auto userController = std::make_shared<UserController>(mappers);
-  server.addEndpoints(userController->getEndpoints());
-
-
-  server.stdioListen();
+  //server.stdioListen();
 
   /* Run HTTP server */
-  //runHttpServer(server);
+  runHttpServer(server);
 
 }
 

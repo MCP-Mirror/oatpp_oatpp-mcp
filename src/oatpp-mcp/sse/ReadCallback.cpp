@@ -9,10 +9,25 @@
 
 namespace oatpp { namespace mcp { namespace sse {
 
-ReadCallback::ReadCallback(const std::shared_ptr<event::Session>& session)
+ReadCallback::ReadCallback(const std::shared_ptr<event::Session>& session, const oatpp::String& apiPrefix)
   : m_session(session)
   , m_initialized(false)
-{}
+{
+  if(apiPrefix && !apiPrefix->empty()) {
+    oatpp::data::stream::BufferOutputStream ss(128);
+    if(apiPrefix->data()[0] != '/') {
+      ss << "/";
+    }
+    ss << apiPrefix;
+//    if(apiPrefix->data()[apiPrefix->length() - 1] != '/') {
+//      ss << "/";
+//    }
+    ss << "sessions/";
+    m_apiPrefix = ss.toString();
+  } else {
+    m_apiPrefix = "/sessions/";
+  }
+}
 
 ReadCallback::~ReadCallback()  {
   OATPP_LOGd("[oatpp::mcp::sse::ReadCallback::~ReadCallback()]", "Closing session")
@@ -23,7 +38,7 @@ oatpp::String ReadCallback::initEvent() {
 
   event::Event event;
   event.name = "endpoint";
-  event.data = "/sessions/" + m_session->getId();
+  event.data = m_apiPrefix + m_session->getId();
 
   oatpp::data::stream::BufferOutputStream ss(256);
   ss << "event: " << event.name << "\n";

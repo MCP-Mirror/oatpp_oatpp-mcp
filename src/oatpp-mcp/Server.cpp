@@ -11,8 +11,9 @@
 
 namespace oatpp { namespace mcp {
 
-Server::Server()
-  : m_pinger(std::make_shared<oatpp::mcp::Pinger>())
+Server::Server(const Config& config)
+  : m_config(config)
+  , m_pinger(std::make_shared<oatpp::mcp::Pinger>())
   , m_eventListener(std::make_shared<oatpp::mcp::Listener>())
   , m_eventServer(std::make_shared<oatpp::mcp::event::Server>(m_pinger))
 {
@@ -61,7 +62,7 @@ void Server::addEndpoints(const oatpp::web::server::api::Endpoints& endpoints) {
 
 std::shared_ptr<web::server::api::ApiController> Server::getSseController() {
   if(!m_sseController) {
-    m_sseController = std::make_shared<oatpp::mcp::sse::Controller>(m_eventServer, m_eventListener, m_mappers);
+    m_sseController = std::make_shared<oatpp::mcp::sse::Controller>(m_eventServer, m_eventListener, m_mappers, m_config.ssePrefix);
   }
   return m_sseController;
 }

@@ -15,6 +15,14 @@
 namespace oatpp { namespace mcp {
 
 class Server {
+public:
+
+  struct Config {
+    oatpp::String ssePrefix;
+  };
+
+private:
+  Config m_config;
 private:
   std::shared_ptr<oatpp::mcp::Pinger> m_pinger;
   std::shared_ptr<oatpp::mcp::Listener> m_eventListener;
@@ -27,7 +35,7 @@ private:
   std::shared_ptr<utils::ApiBridge> m_apiBridge;
 public:
 
-  Server();
+  Server(const Config& config = {});
 
   virtual ~Server() = default;
 
